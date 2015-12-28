@@ -1,0 +1,73 @@
+{
+// blockdiag parser
+//
+package blockdiag
+
+var diag Diag
+
+func init() {
+	diag.Nodes = make(map[string]*Node)
+	diag.Edges = make(map[string]*Edge)
+}
+
+func toIfaceSlice(v interface{}) []interface{} {
+    if v == nil {
+        return nil
+    }
+    return v.([]interface{})
+}
+
+func updateEdges() {
+	for k := range diag.Edges {
+		e := diag.Edges[k]
+		e.Start.Edges = append(e.Start.Edges, e)
+		e.End.Edges = append(e.End.Edges, e)
+	}
+}
+}
+
+diag = _ diagtype:("blockdiag") _ "{" _ chains _ "}" _ EOF { 
+	updateEdges()
+	diag.Name = "test"
+	return diag, nil 
+}
+
+chains = chain+
+
+chain = node:node _ nodes:(edge _ n:node _ {
+	return n, nil
+} )* ";" _ {
+	nodeA := node.(*Node)
+	
+	for _, n := range toIfaceSlice(nodes) {
+		nodeB := n.(*Node)
+		edge := nodeA.Name + "|" + nodeB.Name
+		
+		if e, present := diag.Edges[edge]; !present {
+			e = &Edge{Name: edge, Start: nodeA, End: nodeB}
+			diag.Edges[edge] = e
+		}
+		nodeA = nodeB
+	}
+	return nil, nil
+}
+
+node = node:([a-zA-Z0-9]) {
+	var n *Node
+	var present bool
+	
+	name := string(c.text)
+	if n, present = diag.Nodes[name]; !present {
+		n = &Node{Name: name}
+		diag.Nodes[name] = n
+	} 
+	return n, nil
+}
+
+edge = edge:("->") 
+
+_ = [ \t\n\r]* {
+	return nil, nil
+}
+
+EOF = !.
