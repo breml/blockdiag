@@ -5,11 +5,6 @@ package blockdiag
 
 var diag Diag
 
-func init() {
-	diag.Nodes = make(map[string]*Node)
-	diag.Edges = make(map[string]*Edge)
-}
-
 func toIfaceSlice(v interface{}) []interface{} {
     if v == nil {
         return nil
@@ -26,7 +21,13 @@ func updateEdges() {
 }
 }
 
-diag = _ diagtype:("blockdiag") _ "{" _ chains* _ "}" _ EOF { 
+diag = _ (diagtype:("blockdiag") { 
+	fmt.Println("test") 
+	diag = Diag{}
+	diag.Nodes = make(map[string]*Node)
+	diag.Edges = make(map[string]*Edge)
+	return diagtype, nil
+} ) _ "{" _ chains* _ "}" _ EOF { 
 	updateEdges()
 	diag.Name = "test"
 	return diag, nil 
