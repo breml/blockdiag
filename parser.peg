@@ -26,7 +26,7 @@ func updateEdges() {
 }
 }
 
-diag = _ diagtype:("blockdiag") _ "{" _ chains _ "}" _ EOF { 
+diag = _ diagtype:("blockdiag") _ "{" _ chains* _ "}" _ EOF { 
 	updateEdges()
 	diag.Name = "test"
 	return diag, nil 

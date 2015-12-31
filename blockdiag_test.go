@@ -13,6 +13,13 @@ func TestShouldParser(t *testing.T) {
 	}{
 		{
 			`
+blockdiag {}
+`,
+			[]string{},
+			[]string{},
+		},
+		{
+			`
 blockdiag {
 	A;
 }
