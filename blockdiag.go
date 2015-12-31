@@ -2,6 +2,8 @@ package blockdiag
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 
 	linq "github.com/ahmetalpbalkan/go-linq"
 )
@@ -10,6 +12,43 @@ type Diag struct {
 	Name  string
 	Nodes map[string]*Node
 	Edges map[string]*Edge
+}
+
+func (diag *Diag) GoString() string {
+	var edges []string
+	var ret string
+
+	for _, edge := range diag.Edges {
+		edges = append(edges, edge.Name)
+	}
+	sort.Strings(edges)
+
+	ret += fmt.Sprintln("Name:", diag.Name)
+	ret += fmt.Sprintln("Nodes:", diag.NodesString())
+	ret += fmt.Sprintln("Edges:", strings.Join(edges, ", "))
+	return ret
+}
+
+func (diag *Diag) NodesString() string {
+	var nodes []string
+
+	for _, node := range diag.Nodes {
+		nodes = append(nodes, node.Name)
+	}
+	sort.Strings(nodes)
+
+	return strings.Join(nodes, ", ")
+}
+
+func (diag *Diag) EdgesString() string {
+	var edges []string
+
+	for _, edge := range diag.Edges {
+		edges = append(edges, edge.Name)
+	}
+	sort.Strings(edges)
+
+	return strings.Join(edges, ", ")
 }
 
 func (diag *Diag) FindCircular() bool {
