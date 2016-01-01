@@ -76,3 +76,22 @@ blockdiag {
 		}
 	}
 }
+
+func TestShouldNotParse(t *testing.T) {
+	for _, test := range []struct {
+		description string
+		input       string
+	}{
+		{
+			"No block",
+			`
+blockdiag
+`,
+		},
+	} {
+		_, err := ParseReader("shouldnotparse.diag", strings.NewReader(test.input))
+		if err == nil {
+			t.Fatalf("%s: should not parse, but didn't give an error with input %s", test.description, test.input)
+		}
+	}
+}
