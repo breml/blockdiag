@@ -22,7 +22,6 @@ func updateEdges() {
 }
 
 diag = _ (diagtype:("blockdiag") { 
-	fmt.Println("test") 
 	diag = Diag{}
 	diag.Nodes = make(map[string]*Node)
 	diag.Edges = make(map[string]*Edge)
