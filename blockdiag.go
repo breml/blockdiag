@@ -9,9 +9,10 @@ import (
 )
 
 type Diag struct {
-	Name  string
-	Nodes map[string]*Node
-	Edges map[string]*Edge
+	Name     string
+	Nodes    map[string]*Node
+	Edges    map[string]*Edge
+	Circular []*nodes
 }
 
 func (diag *Diag) GoString() string {
@@ -25,7 +26,8 @@ func (diag *Diag) GoString() string {
 
 	ret += fmt.Sprintln("Name:", diag.Name)
 	ret += fmt.Sprintln("Nodes:", diag.NodesString())
-	ret += fmt.Sprintln("Edges:", strings.Join(edges, ", "))
+	ret += fmt.Sprintln("Edges:", diag.EdgesString())
+	ret += fmt.Sprintln("Circulars: ", diag.CircularString())
 	return ret
 }
 
@@ -51,40 +53,54 @@ func (diag *Diag) EdgesString() string {
 	return strings.Join(edges, ", ")
 }
 
+func (diag *Diag) CircularString() string {
+	var circulars []string
+
+	for _, circular := range diag.Circular {
+		var circularPath []string
+		for _, node := range circular.keys {
+			circularPath = append(circularPath, node)
+		}
+		circulars = append(circulars, strings.Join(circularPath, " -> "))
+	}
+	sort.Strings(circulars)
+
+	return strings.Join(circulars, "\n")
+}
+
 func (diag *Diag) FindCircular() bool {
 	for _, n := range diag.Nodes {
 		visitedNodes := &nodes{}
 
-		fmt.Println("\nStart from Node:", n.Name)
 		if !visitedNodes.exists(n.Name) {
 			visitedNodes.keys = append(visitedNodes.keys, n.Name)
 		}
 		for _, c := range n.getChildNodes() {
-			fmt.Println("Child:", c.Name)
-			subFindCircular(c, visitedNodes)
+			diag.subFindCircular(c, visitedNodes)
 		}
 	}
 
-	// Wrong
+	if len(diag.Circular) > 0 {
+		return true
+	}
 	return false
 }
 
-func subFindCircular(n *Node, visitedNodes *nodes) {
-	fmt.Println("In Node:", n.Name)
+func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 	if visitedNodes.exists(n.Name) {
-		fmt.Println("Found already visited Node:", n.Name)
-		fmt.Print("Path: ")
+		circularNodes := &nodes{}
 		for _, p := range visitedNodes.keys {
-			fmt.Print(p, " -> ")
+			circularNodes.keys = append(circularNodes.keys, p)
 		}
-		fmt.Println(n.Name)
+		circularNodes.keys = append(circularNodes.keys, n.Name)
+
+		diag.Circular = append(diag.Circular, circularNodes)
 		return
 	}
 	visitedNodes.keys = append(visitedNodes.keys, n.Name)
 
 	for _, c := range n.getChildNodes() {
-		fmt.Println("Child:", c.Name)
-		subFindCircular(c, visitedNodes)
+		diag.subFindCircular(c, visitedNodes)
 	}
 	visitedNodes.keys = visitedNodes.keys[:len(visitedNodes.keys)-1]
 }
@@ -98,7 +114,7 @@ type Node struct {
 
 func (n *Node) getChildNodes() (children []*Node) {
 	for _, e := range n.Edges {
-		if e.Start == n {
+		if e.Start == n && e.End != n {
 			children = append(children, e.End)
 		}
 	}

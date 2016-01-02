@@ -67,7 +67,10 @@ blockdiag {
 		if err != nil {
 			t.Fatalf("%s: parse error: %t with input %s", test.description, err, test.input)
 		}
-		gotDiag := got.(Diag)
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("%s: assertion error: %s should parse to diag", test.description, test.input)
+		}
 		if gotDiag.NodesString() != strings.Join(test.nodes, ", ") {
 			t.Fatalf("%s: nodes error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(test.nodes, ", "), gotDiag.NodesString())
 		}
@@ -92,6 +95,58 @@ blockdiag
 		_, err := ParseReader("shouldnotparse.diag", strings.NewReader(test.input))
 		if err == nil {
 			t.Fatalf("%s: should not parse, but didn't give an error with input %s", test.description, test.input)
+		}
+	}
+}
+
+func TestCircular(t *testing.T) {
+	for _, test := range []struct {
+		input    string
+		circular bool
+	}{
+		{
+			`
+blockdiag{
+	A;
+}
+`,
+			false,
+		},
+		{
+			`
+blockdiag{
+	A -> B -> C;
+}
+`,
+			false,
+		},
+		{
+			`
+blockdiag{
+	A -> A;
+}
+`,
+			false,
+		},
+		{
+			`
+blockdiag{
+	A -> B -> C -> A;
+}
+`,
+			true,
+		},
+	} {
+		got, err := ParseReader("shouldnotparse.diag", strings.NewReader(test.input))
+		if err != nil {
+			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+		}
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
+		}
+		if gotDiag.FindCircular() != test.circular {
+			t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
 		}
 	}
 }
