@@ -173,24 +173,27 @@ var g = &grammar{
 				expr: &labeledExpr{
 					pos:   position{line: 38, col: 8, offset: 676},
 					label: "node",
-					expr: &charClassMatcher{
-						pos:        position{line: 38, col: 14, offset: 682},
-						val:        "[a-zA-Z0-9]",
-						ranges:     []rune{'a', 'z', 'A', 'Z', '0', '9'},
-						ignoreCase: false,
-						inverted:   false,
+					expr: &oneOrMoreExpr{
+						pos: position{line: 38, col: 14, offset: 682},
+						expr: &charClassMatcher{
+							pos:        position{line: 38, col: 14, offset: 682},
+							val:        "[a-zA-Z0-9]",
+							ranges:     []rune{'a', 'z', 'A', 'Z', '0', '9'},
+							ignoreCase: false,
+							inverted:   false,
+						},
 					},
 				},
 			},
 		},
 		{
 			name: "edge",
-			pos:  position{line: 50, col: 1, offset: 869},
+			pos:  position{line: 50, col: 1, offset: 870},
 			expr: &labeledExpr{
-				pos:   position{line: 50, col: 8, offset: 876},
+				pos:   position{line: 50, col: 8, offset: 877},
 				label: "edge",
 				expr: &litMatcher{
-					pos:        position{line: 50, col: 14, offset: 882},
+					pos:        position{line: 50, col: 14, offset: 883},
 					val:        "->",
 					ignoreCase: false,
 				},
@@ -198,21 +201,21 @@ var g = &grammar{
 		},
 		{
 			name: "_",
-			pos:  position{line: 52, col: 1, offset: 890},
+			pos:  position{line: 52, col: 1, offset: 891},
 			expr: &zeroOrMoreExpr{
-				pos: position{line: 52, col: 5, offset: 894},
+				pos: position{line: 52, col: 5, offset: 895},
 				expr: &choiceExpr{
-					pos: position{line: 52, col: 6, offset: 895},
+					pos: position{line: 52, col: 6, offset: 896},
 					alternatives: []interface{}{
 						&charClassMatcher{
-							pos:        position{line: 52, col: 6, offset: 895},
+							pos:        position{line: 52, col: 6, offset: 896},
 							val:        "[ \\t\\n\\r]",
 							chars:      []rune{' ', '\t', '\n', '\r'},
 							ignoreCase: false,
 							inverted:   false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 52, col: 18, offset: 907},
+							pos:  position{line: 52, col: 18, offset: 908},
 							name: "Comment",
 						},
 					},
@@ -221,19 +224,19 @@ var g = &grammar{
 		},
 		{
 			name: "Comment",
-			pos:  position{line: 54, col: 1, offset: 918},
+			pos:  position{line: 54, col: 1, offset: 919},
 			expr: &seqExpr{
-				pos: position{line: 54, col: 11, offset: 928},
+				pos: position{line: 54, col: 11, offset: 929},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 54, col: 11, offset: 928},
+						pos:        position{line: 54, col: 11, offset: 929},
 						val:        "#",
 						ignoreCase: false,
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 54, col: 15, offset: 932},
+						pos: position{line: 54, col: 15, offset: 933},
 						expr: &charClassMatcher{
-							pos:        position{line: 54, col: 15, offset: 932},
+							pos:        position{line: 54, col: 15, offset: 933},
 							val:        "[^\\n\\r]",
 							chars:      []rune{'\n', '\r'},
 							ignoreCase: false,
@@ -241,9 +244,9 @@ var g = &grammar{
 						},
 					},
 					&zeroOrOneExpr{
-						pos: position{line: 54, col: 24, offset: 941},
+						pos: position{line: 54, col: 24, offset: 942},
 						expr: &charClassMatcher{
-							pos:        position{line: 54, col: 24, offset: 941},
+							pos:        position{line: 54, col: 24, offset: 942},
 							val:        "[\\r]",
 							chars:      []rune{'\r'},
 							ignoreCase: false,
@@ -251,7 +254,7 @@ var g = &grammar{
 						},
 					},
 					&charClassMatcher{
-						pos:        position{line: 54, col: 29, offset: 946},
+						pos:        position{line: 54, col: 29, offset: 947},
 						val:        "[\\n]",
 						chars:      []rune{'\n'},
 						ignoreCase: false,
@@ -262,11 +265,11 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 56, col: 1, offset: 952},
+			pos:  position{line: 56, col: 1, offset: 953},
 			expr: &notExpr{
-				pos: position{line: 56, col: 7, offset: 958},
+				pos: position{line: 56, col: 7, offset: 959},
 				expr: &anyMatcher{
-					line: 56, col: 8, offset: 959,
+					line: 56, col: 8, offset: 960,
 				},
 			},
 		},

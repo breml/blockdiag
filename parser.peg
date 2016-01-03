@@ -35,7 +35,7 @@ chain = node:node _ nodes:(edge _ n:node _ {
 	return nil, nil
 }
 
-node = node:([a-zA-Z0-9]) {
+node = node:([a-zA-Z0-9]+) {
 	var n *Node
 	var present bool
 	

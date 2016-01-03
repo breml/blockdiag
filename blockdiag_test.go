@@ -76,6 +76,17 @@ blockdiag # Comment
 			[]string{"A"},
 			[]string{},
 		},
+		{
+			"Multi Char Node Names",
+			`
+blockdiag
+{
+	MultiCharNodeName1;
+}
+`,
+			[]string{"MultiCharNodeName1"},
+			[]string{},
+		},
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
