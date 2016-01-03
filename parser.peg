@@ -66,8 +66,8 @@ node = node:([a-zA-Z0-9]) {
 
 edge = edge:("->") 
 
-_ = [ \t\n\r]* {
-	return nil, nil
-}
+_ = ([ \t\n\r] / Comment)*
+
+Comment = "#" [^\n\r]* [\r]?[\n]
 
 EOF = !.

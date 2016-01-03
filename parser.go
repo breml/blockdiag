@@ -216,15 +216,61 @@ var g = &grammar{
 		{
 			name: "_",
 			pos:  position{line: 69, col: 1, offset: 1190},
-			expr: &actionExpr{
+			expr: &zeroOrMoreExpr{
 				pos: position{line: 69, col: 5, offset: 1194},
-				run: (*parser).callon_1,
-				expr: &zeroOrMoreExpr{
-					pos: position{line: 69, col: 5, offset: 1194},
-					expr: &charClassMatcher{
-						pos:        position{line: 69, col: 5, offset: 1194},
-						val:        "[ \\t\\n\\r]",
-						chars:      []rune{' ', '\t', '\n', '\r'},
+				expr: &choiceExpr{
+					pos: position{line: 69, col: 6, offset: 1195},
+					alternatives: []interface{}{
+						&charClassMatcher{
+							pos:        position{line: 69, col: 6, offset: 1195},
+							val:        "[ \\t\\n\\r]",
+							chars:      []rune{' ', '\t', '\n', '\r'},
+							ignoreCase: false,
+							inverted:   false,
+						},
+						&ruleRefExpr{
+							pos:  position{line: 69, col: 18, offset: 1207},
+							name: "Comment",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Comment",
+			pos:  position{line: 71, col: 1, offset: 1218},
+			expr: &seqExpr{
+				pos: position{line: 71, col: 11, offset: 1228},
+				exprs: []interface{}{
+					&litMatcher{
+						pos:        position{line: 71, col: 11, offset: 1228},
+						val:        "#",
+						ignoreCase: false,
+					},
+					&zeroOrMoreExpr{
+						pos: position{line: 71, col: 15, offset: 1232},
+						expr: &charClassMatcher{
+							pos:        position{line: 71, col: 15, offset: 1232},
+							val:        "[^\\n\\r]",
+							chars:      []rune{'\n', '\r'},
+							ignoreCase: false,
+							inverted:   true,
+						},
+					},
+					&zeroOrOneExpr{
+						pos: position{line: 71, col: 24, offset: 1241},
+						expr: &charClassMatcher{
+							pos:        position{line: 71, col: 24, offset: 1241},
+							val:        "[\\r]",
+							chars:      []rune{'\r'},
+							ignoreCase: false,
+							inverted:   false,
+						},
+					},
+					&charClassMatcher{
+						pos:        position{line: 71, col: 29, offset: 1246},
+						val:        "[\\n]",
+						chars:      []rune{'\n'},
 						ignoreCase: false,
 						inverted:   false,
 					},
@@ -233,11 +279,11 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 73, col: 1, offset: 1227},
+			pos:  position{line: 73, col: 1, offset: 1252},
 			expr: &notExpr{
-				pos: position{line: 73, col: 7, offset: 1233},
+				pos: position{line: 73, col: 7, offset: 1258},
 				expr: &anyMatcher{
-					line: 73, col: 8, offset: 1234,
+					line: 73, col: 8, offset: 1259,
 				},
 			},
 		},
@@ -319,16 +365,6 @@ func (p *parser) callonnode1() (interface{}, error) {
 	stack := p.vstack[len(p.vstack)-1]
 	_ = stack
 	return p.cur.onnode1(stack["node"])
-}
-
-func (c *current) on_1() (interface{}, error) {
-	return nil, nil
-}
-
-func (p *parser) callon_1() (interface{}, error) {
-	stack := p.vstack[len(p.vstack)-1]
-	_ = stack
-	return p.cur.on_1()
 }
 
 var (

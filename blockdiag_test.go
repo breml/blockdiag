@@ -62,6 +62,20 @@ blockdiag {
 			[]string{"A"},
 			[]string{"A|A"},
 		},
+		{
+			"Comment",
+			`
+# Comment
+blockdiag # Comment
+{
+# Comment
+	A; # Comment
+# Comment
+} # Comment
+`,
+			[]string{"A"},
+			[]string{},
+		},
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
