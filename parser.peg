@@ -8,11 +8,24 @@ diag = _ (diagtype:("blockdiag") {
 	diag = Diag{}
 	diag.Nodes = make(map[string]*Node)
 	diag.Edges = make(map[string]*Edge)
+	diag.Attributes = make(map[string]string)
 	return diagtype, nil
-} ) _ "{" _ chains* _ "}" _ EOF { 
+} ) _ "{" _ diagElements* _ "}" _ EOF {
 	updateEdges()
 	diag.Name = "test"
 	return diag, nil 
+}
+
+// diagElements = diagAttr / chain / node
+diagElements = diagAttr / chains
+
+diagAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
+	diag.Attributes[attrName.(string)] = attrValue.(string)
+	return nil, nil
+}
+
+attrValue = ([a-zA-Z0-9]+) {
+	return string(c.text), nil
 }
 
 chains = chain+
@@ -35,7 +48,7 @@ chain = node:node _ nodes:(edge _ n:node _ {
 	return nil, nil
 }
 
-node = node:([a-zA-Z0-9]+) {
+node = node:ident {
 	var n *Node
 	var present bool
 	
@@ -48,6 +61,10 @@ node = node:([a-zA-Z0-9]+) {
 }
 
 edge = edge:("->") 
+
+ident = [a-zA-Z0-9_]+ {
+	return string(c.text), nil
+}
 
 _ = ([ \t\n\r] / Comment)*
 

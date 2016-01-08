@@ -9,10 +9,11 @@ import (
 )
 
 type Diag struct {
-	Name     string
-	Nodes    map[string]*Node
-	Edges    map[string]*Edge
-	Circular []*nodes
+	Name       string
+	Nodes      map[string]*Node
+	Edges      map[string]*Edge
+	Attributes map[string]string
+	Circular   []*nodes
 }
 
 func (diag *Diag) GoString() string {
@@ -27,7 +28,8 @@ func (diag *Diag) GoString() string {
 	ret += fmt.Sprintln("Name:", diag.Name)
 	ret += fmt.Sprintln("Nodes:", diag.NodesString())
 	ret += fmt.Sprintln("Edges:", diag.EdgesString())
-	ret += fmt.Sprintln("Circulars: ", diag.CircularString())
+	ret += fmt.Sprintln("Circulars:", diag.CircularString())
+	ret += fmt.Sprintln("Attributes:", diag.AttributesString())
 	return ret
 }
 
@@ -66,6 +68,17 @@ func (diag *Diag) CircularString() string {
 	sort.Strings(circulars)
 
 	return strings.Join(circulars, "\n")
+}
+
+func (diag *Diag) AttributesString() string {
+	var attributes []string
+
+	for key, value := range diag.Attributes {
+		attributes = append(attributes, key+"="+value)
+	}
+	sort.Strings(attributes)
+
+	return strings.Join(attributes, "\n")
 }
 
 func (diag *Diag) FindCircular() bool {

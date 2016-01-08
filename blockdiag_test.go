@@ -87,6 +87,18 @@ blockdiag
 			[]string{"MultiCharNodeName1"},
 			[]string{},
 		},
+		{
+			"Digramm Attributes",
+			`
+blockdiag
+{
+	node_width = 128;
+	A;
+}
+`,
+			[]string{"A"},
+			[]string{},
+		},
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
