@@ -1,6 +1,7 @@
 package blockdiag
 
 import (
+	"sort"
 	"strings"
 	"testing"
 )
@@ -11,6 +12,7 @@ func TestShouldParser(t *testing.T) {
 		input       string
 		nodes       []string
 		edges       []string
+		attributes  map[string]string
 	}{
 		{
 			"Empty diagram",
@@ -19,6 +21,7 @@ blockdiag {}
 `,
 			[]string{},
 			[]string{},
+			map[string]string{},
 		},
 		{
 			"Single Node",
@@ -29,6 +32,7 @@ blockdiag {
 `,
 			[]string{"A"},
 			[]string{},
+			map[string]string{},
 		},
 		{
 			// TODO Add test case for node chain without tailing ;
@@ -40,6 +44,7 @@ blockdiag {
 `,
 			[]string{"A", "B"},
 			[]string{"A|B"},
+			map[string]string{},
 		},
 		{
 			"Multiple chains, using same nodes",
@@ -51,6 +56,7 @@ blockdiag {
 `,
 			[]string{"A", "B", "C", "D"},
 			[]string{"A|B", "A|D", "B|C"},
+			map[string]string{},
 		},
 		{
 			"Self reference",
@@ -61,6 +67,7 @@ blockdiag {
 `,
 			[]string{"A"},
 			[]string{"A|A"},
+			map[string]string{},
 		},
 		{
 			"Comment",
@@ -75,6 +82,7 @@ blockdiag # Comment
 `,
 			[]string{"A"},
 			[]string{},
+			map[string]string{},
 		},
 		{
 			"Multi Char Node Names",
@@ -86,6 +94,7 @@ blockdiag
 `,
 			[]string{"MultiCharNodeName1"},
 			[]string{},
+			map[string]string{},
 		},
 		{
 			"Digramm Attributes",
@@ -98,6 +107,9 @@ blockdiag
 `,
 			[]string{"A"},
 			[]string{},
+			map[string]string{
+				"node_width": "128",
+			},
 		},
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
@@ -113,6 +125,15 @@ blockdiag
 		}
 		if gotDiag.EdgesString() != strings.Join(test.edges, ", ") {
 			t.Fatalf("%s edges error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(test.edges, ", "), gotDiag.EdgesString())
+		}
+
+		var attributes []string
+		for key, value := range test.attributes {
+			attributes = append(attributes, key+"="+value)
+		}
+		sort.Strings(attributes)
+		if gotDiag.AttributesString() != strings.Join(attributes, "\n") {
+			t.Fatalf("%s attributes error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(attributes, "\n"), gotDiag.AttributesString())
 		}
 	}
 }
