@@ -111,6 +111,18 @@ blockdiag
 				"node_width": "128",
 			},
 		},
+		{
+			"Digramm type 'diagram'",
+			`
+diagram
+{
+	A;
+}
+`,
+			[]string{"A"},
+			[]string{},
+			map[string]string{},
+		},
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
