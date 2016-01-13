@@ -14,6 +14,7 @@ type Diag struct {
 	Edges      map[string]*Edge
 	Attributes map[string]string
 	Circular   []*nodes
+	Grid       [][]*Node
 }
 
 func (diag *Diag) GoString() string {
@@ -118,6 +119,25 @@ func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 	visitedNodes.keys = visitedNodes.keys[:len(visitedNodes.keys)-1]
 }
 
+func (diag *Diag) getStartNodes() Nodes {
+	var startNodes Nodes
+
+	for _, n := range diag.Nodes {
+		startNode := true
+		for _, e := range n.Edges {
+			if e.End == n {
+				startNode = false
+				break
+			}
+		}
+		if startNode {
+			startNodes = append(startNodes, n)
+		}
+	}
+
+	return startNodes
+}
+
 type Node struct {
 	Name  string
 	PosX  int
@@ -132,6 +152,30 @@ func (n *Node) getChildNodes() (children []*Node) {
 		}
 	}
 	return
+}
+
+type Nodes []*Node
+
+func (nodes Nodes) Len() int {
+	return len(nodes)
+}
+
+func (nodes Nodes) Less(i, j int) bool {
+	return nodes[i].Name < nodes[j].Name
+}
+
+func (nodes Nodes) Swap(i, j int) {
+	nodes[i], nodes[j] = nodes[j], nodes[i]
+}
+
+func (nodes Nodes) String() string {
+	var s, delim string
+	sort.Sort(nodes)
+	for _, n := range nodes {
+		s += delim + n.Name
+		delim = ", "
+	}
+	return s
 }
 
 type Edge struct {

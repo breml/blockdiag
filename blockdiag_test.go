@@ -220,3 +220,52 @@ blockdiag{
 		}
 	}
 }
+
+func TestGetStartNodes(t *testing.T) {
+	for _, test := range []struct {
+		input      string
+		startNodes []string
+	}{
+		{
+			`
+blockdiag{
+	A -> B -> C;
+}
+`,
+			[]string{"A"},
+		},
+		{
+			`
+blockdiag {
+	A -> B -> C;
+	D;
+	E -> F;
+}
+`,
+			[]string{"A", "D", "E"},
+		},
+	} {
+		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
+		if err != nil {
+			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+		}
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
+		}
+		// if gotDiag.PlaceInGrid() != test.circular {
+		// 	t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
+		// }
+		startNodes := gotDiag.getStartNodes()
+		if len(startNodes) != len(test.startNodes) {
+			t.Fatalf("Start Nodes count wrong, expected: %s, got: %s", strings.Join(test.startNodes, ", "), startNodes)
+		}
+		sort.Sort(startNodes)
+		sort.Strings(test.startNodes)
+		for i, n := range startNodes {
+			if n.Name != test.startNodes[i] {
+				t.Fatalf("Start Nodes do not match, expected: %s, got: %s", strings.Join(test.startNodes, ", "), startNodes)
+			}
+		}
+	}
+}
