@@ -14,9 +14,19 @@ type Diag struct {
 	Edges      map[string]*Edge
 	Attributes map[string]string
 	Circular   []*nodes
-	Grid       [][]*Node
+	Grid       grid
 }
 
+func NewDiag() Diag {
+	diag := Diag{}
+
+	diag.Nodes = make(map[string]*Node)
+	diag.Edges = make(map[string]*Edge)
+	diag.Attributes = make(map[string]string)
+	diag.Grid = NewGrid()
+
+	return diag
+}
 func (diag *Diag) GoString() string {
 	var edges []string
 	var ret string
@@ -80,6 +90,20 @@ func (diag *Diag) AttributesString() string {
 	sort.Strings(attributes)
 
 	return strings.Join(attributes, "\n")
+}
+
+func (diag *Diag) GridString() string {
+	var ret string
+
+	for y, _ := range diag.Grid {
+		for _, n := range diag.Grid[y] {
+			if n != nil {
+				ret += "[" + n.Name + "] "
+			}
+		}
+		ret += "\n"
+	}
+	return ret
 }
 
 func (diag *Diag) FindCircular() bool {
@@ -193,4 +217,37 @@ func (n *nodes) exists(key string) bool {
 		return s.(string) == key, nil
 	})
 	return ret
+}
+
+type grid [][]*Node
+
+func NewGrid() grid {
+	var g grid
+
+	const minSize = 10
+
+	g = make([][]*Node, minSize)
+	for i := 0; i < minSize; i++ {
+		g[i] = make([]*Node, minSize)
+	}
+
+	return g
+}
+
+func (g grid) Set(x, y int, n *Node) error {
+	if x < 0 || y < 0 || x >= len(g[0]) || y >= len(g) {
+		return fmt.Errorf("out of bound x or y, %d, %d", x, y)
+	}
+
+	g[x][y] = n
+
+	return nil
+}
+
+func (diag *Diag) PlaceInGrid() {
+	var x int
+	for _, n := range diag.Nodes {
+		diag.Grid.Set(0, x, n)
+		x++
+	}
 }

@@ -5,22 +5,19 @@ package blockdiag
 }
 
 diag = _ (diagtype:("blockdiag" / "diagram") {
-	diag = Diag{}
-	diag.Nodes = make(map[string]*Node)
-	diag.Edges = make(map[string]*Edge)
-	diag.Attributes = make(map[string]string)
+	_parserDiag = NewDiag()
 	return diagtype, nil
 } ) _ "{" _ diagElements* _ "}" _ EOF {
 	updateEdges()
-	diag.Name = "test"
-	return diag, nil 
+	_parserDiag.Name = "test"
+	return _parserDiag, nil
 }
 
 // diagElements = diagAttr / chain / node
 diagElements = diagAttr / chains
 
 diagAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
-	diag.Attributes[attrName.(string)] = attrValue.(string)
+	_parserDiag.Attributes[attrName.(string)] = attrValue.(string)
 	return nil, nil
 }
 
@@ -39,9 +36,9 @@ chain = node:node _ nodes:(edge _ n:node _ {
 		nodeB := n.(*Node)
 		edge := nodeA.Name + "|" + nodeB.Name
 		
-		if e, present := diag.Edges[edge]; !present {
+		if e, present := _parserDiag.Edges[edge]; !present {
 			e = &Edge{Name: edge, Start: nodeA, End: nodeB}
-			diag.Edges[edge] = e
+			_parserDiag.Edges[edge] = e
 		}
 		nodeA = nodeB
 	}
@@ -53,9 +50,9 @@ node = node:ident {
 	var present bool
 	
 	name := string(c.text)
-	if n, present = diag.Nodes[name]; !present {
+	if n, present = _parserDiag.Nodes[name]; !present {
 		n = &Node{Name: name}
-		diag.Nodes[name] = n
+		_parserDiag.Nodes[name] = n
 	} 
 	return n, nil
 }

@@ -1,6 +1,6 @@
 package blockdiag
 
-var diag Diag
+var _parserDiag Diag
 
 func toIfaceSlice(v interface{}) []interface{} {
 	if v == nil {
@@ -10,8 +10,8 @@ func toIfaceSlice(v interface{}) []interface{} {
 }
 
 func updateEdges() {
-	for k := range diag.Edges {
-		e := diag.Edges[k]
+	for k := range _parserDiag.Edges {
+		e := _parserDiag.Edges[k]
 		e.Start.Edges = append(e.Start.Edges, e)
 		e.End.Edges = append(e.End.Edges, e)
 	}

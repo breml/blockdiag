@@ -126,7 +126,7 @@ diagram
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("%s: parse error: %t with input %s", test.description, err, test.input)
+			t.Fatalf("%s: parse error: %s with input %s", test.description, err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
@@ -244,6 +244,16 @@ blockdiag {
 `,
 			[]string{"A", "D", "E"},
 		},
+		{
+			`
+blockdiag {
+	D;
+	E -> F;
+	A -> B -> C;
+}
+`,
+			[]string{"A", "D", "E"},
+		},
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
 		if err != nil {
@@ -267,5 +277,42 @@ blockdiag {
 				t.Fatalf("Start Nodes do not match, expected: %s, got: %s", strings.Join(test.startNodes, ", "), startNodes)
 			}
 		}
+	}
+}
+
+func TestPlaceInGrid(t *testing.T) {
+	for _, test := range []struct {
+		input string
+	}{
+		{
+			`
+blockdiag{
+	A -> B -> C;
+}
+`,
+		},
+		{
+			`
+blockdiag{
+	A -> B -> C;
+	B -> D;
+	A -> E -> C;
+}
+`,
+		},
+	} {
+		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
+		if err != nil {
+			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+		}
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
+		}
+		// if gotDiag.PlaceInGrid() != test.circular {
+		// 	t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
+		// }
+		gotDiag.PlaceInGrid()
+		t.Logf("%s\n", gotDiag.GridString())
 	}
 }
