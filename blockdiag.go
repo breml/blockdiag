@@ -48,6 +48,7 @@ func (diag *Diag) NodesString() string {
 	var nodes []string
 
 	for _, node := range diag.Nodes {
+		// nodes = append(nodes, fmt.Sprintf("%s (%d, %d)", node.Name, node.PosX, node.PosY))
 		nodes = append(nodes, node.Name)
 	}
 	sort.Strings(nodes)
@@ -99,6 +100,8 @@ func (diag *Diag) GridString() string {
 		for _, n := range diag.Grid[y] {
 			if n != nil {
 				ret += "[" + n.Name + "] "
+			} else {
+				ret += " .  "
 			}
 		}
 		ret += "\n"
@@ -239,15 +242,38 @@ func (g grid) Set(x, y int, n *Node) error {
 		return fmt.Errorf("out of bound x or y, %d, %d", x, y)
 	}
 
-	g[x][y] = n
+	g[y][x] = n
 
 	return nil
 }
 
 func (diag *Diag) PlaceInGrid() {
-	var x int
-	for _, n := range diag.Nodes {
-		diag.Grid.Set(0, x, n)
-		x++
+	var x, y int
+
+	placedNodes := make(map[*Node]bool)
+
+	for _, n := range diag.getStartNodes() {
+		_, ok := placedNodes[n]
+		if ok {
+			continue
+		}
+		placedNodes[n] = true
+		diag.Grid.Set(x, y, n)
+		diag.placeInGrid(n, x+1, y, placedNodes)
+		y++
+	}
+}
+
+func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool) {
+	for _, e := range n.Edges {
+		_, ok := placedNodes[e.End]
+		if ok {
+			continue
+		}
+		placedNodes[e.End] = true
+		diag.Grid.Set(x, y, e.End)
+
+		diag.placeInGrid(e.End, x+1, y, placedNodes)
+		y++
 	}
 }
