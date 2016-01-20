@@ -26,7 +26,9 @@ func main() {
 		`blockdiag {
 			node_width = 128;
 			A -> B -> C -> D;
-			A -> E -> F -> G;
+			B -> F -> G -> X -> Y;
+			C -> E;
+			H -> I -> J;
 		}`
 
 	got, err := blockdiag.ParseReader("simple.diag", strings.NewReader(simple))

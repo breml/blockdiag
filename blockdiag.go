@@ -162,6 +162,8 @@ func (diag *Diag) getStartNodes() Nodes {
 		}
 	}
 
+	sort.Sort(startNodes)
+
 	return startNodes
 }
 
@@ -172,12 +174,13 @@ type Node struct {
 	Edges []*Edge
 }
 
-func (n *Node) getChildNodes() (children []*Node) {
+func (n *Node) getChildNodes() (children Nodes) {
 	for _, e := range n.Edges {
 		if e.Start == n && e.End != n {
 			children = append(children, e.End)
 		}
 	}
+	sort.Sort(children)
 	return
 }
 
@@ -259,21 +262,27 @@ func (diag *Diag) PlaceInGrid() {
 		}
 		placedNodes[n] = true
 		diag.Grid.Set(x, y, n)
-		diag.placeInGrid(n, x+1, y, placedNodes)
+		y += diag.placeInGrid(n, x+1, y, placedNodes)
 		y++
 	}
 }
 
-func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool) {
-	for _, e := range n.Edges {
-		_, ok := placedNodes[e.End]
+func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool) int {
+	addedNodes := 0
+	for _, n := range n.getChildNodes() {
+		_, ok := placedNodes[n]
 		if ok {
 			continue
 		}
-		placedNodes[e.End] = true
-		diag.Grid.Set(x, y, e.End)
+		placedNodes[n] = true
+		diag.Grid.Set(x, y+addedNodes, n)
 
-		diag.placeInGrid(e.End, x+1, y, placedNodes)
-		y++
+		addedNodes += diag.placeInGrid(n, x+1, y+addedNodes, placedNodes)
+		addedNodes++
 	}
+
+	if addedNodes > 0 {
+		return addedNodes - 1
+	}
+	return addedNodes
 }
