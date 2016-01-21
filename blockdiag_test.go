@@ -270,7 +270,6 @@ blockdiag {
 		if len(startNodes) != len(test.startNodes) {
 			t.Fatalf("Start Nodes count wrong, expected: %s, got: %s", strings.Join(test.startNodes, ", "), startNodes)
 		}
-		sort.Sort(startNodes)
 		sort.Strings(test.startNodes)
 		for i, n := range startNodes {
 			if n.Name != test.startNodes[i] {
