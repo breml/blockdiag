@@ -281,13 +281,24 @@ blockdiag {
 
 func TestPlaceInGrid(t *testing.T) {
 	for _, test := range []struct {
-		input string
+		input  string
+		output string
 	}{
 		{
 			`
 blockdiag{
 	A -> B -> C;
 }
+`, `[A] [B] [C]  .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
 `,
 		},
 		{
@@ -297,6 +308,16 @@ blockdiag{
 	B -> D;
 	A -> E -> C;
 }
+`, `[A] [B] [C]  .   .   .   .   .   .   .  
+ .   .  [D]  .   .   .   .   .   .   .  
+ .  [E]  .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
 `,
 		},
 	} {
@@ -312,6 +333,8 @@ blockdiag{
 		// 	t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
 		// }
 		gotDiag.PlaceInGrid()
-		t.Logf("%s\n", gotDiag.GridString())
+		if gotDiag.GridString() != test.output {
+			t.Fatalf("expected: \n|%s|, got: \n|%s|", test.output, gotDiag.GridString())
+		}
 	}
 }
