@@ -94,19 +94,7 @@ func (diag *Diag) AttributesString() string {
 }
 
 func (diag *Diag) GridString() string {
-	var ret string
-
-	for y, _ := range diag.Grid {
-		for _, n := range diag.Grid[y] {
-			if n != nil {
-				ret += "[" + n.Name + "] "
-			} else {
-				ret += " .  "
-			}
-		}
-		ret += "\n"
-	}
-	return ret
+	return diag.Grid.String()
 }
 
 func (diag *Diag) FindCircular() bool {
@@ -248,6 +236,23 @@ func (g grid) Set(x, y int, n *Node) error {
 	g[y][x] = n
 
 	return nil
+}
+
+func (g grid) String() string {
+	ret := ""
+
+	for y, _ := range g {
+		for _, n := range g[y] {
+			if n != nil {
+				ret += "[" + n.Name + "] "
+			} else {
+				ret += " .  "
+			}
+		}
+		ret += "\n"
+	}
+
+	return ret
 }
 
 func (diag *Diag) PlaceInGrid() {
