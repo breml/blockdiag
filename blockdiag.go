@@ -244,7 +244,7 @@ func (g grid) String() string {
 	for y, _ := range g {
 		for _, n := range g[y] {
 			if n != nil {
-				ret += "[" + n.Name + "] "
+				ret += "[" + string(n.Name[0]) + "] "
 			} else {
 				ret += " .  "
 			}
