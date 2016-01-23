@@ -216,13 +216,17 @@ func (n *nodes) exists(key string) bool {
 type grid [][]*Node
 
 func NewGrid() grid {
-	var g grid
-
 	const minSize = 10
 
-	g = make([][]*Node, minSize)
-	for i := 0; i < minSize; i++ {
-		g[i] = make([]*Node, minSize)
+	return NewSizedGrid(minSize, minSize)
+}
+
+func NewSizedGrid(x, y int) grid {
+	var g grid
+
+	g = make([][]*Node, y)
+	for i := 0; i < y; i++ {
+		g[i] = make([]*Node, x)
 	}
 
 	return g
