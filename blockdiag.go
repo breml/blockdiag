@@ -134,6 +134,15 @@ func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 	visitedNodes.keys = visitedNodes.keys[:len(visitedNodes.keys)-1]
 }
 
+func (diag *Diag) getNodes() Nodes {
+	var nodes Nodes
+	for _, n := range diag.Nodes {
+		nodes = append(nodes, n)
+	}
+	sort.Sort(nodes)
+	return nodes
+}
+
 func (diag *Diag) getStartNodes() Nodes {
 	var startNodes Nodes
 
@@ -273,6 +282,19 @@ func (diag *Diag) PlaceInGrid() {
 		diag.Grid.Set(x, y, n)
 		y += diag.placeInGrid(n, x+1, y, placedNodes)
 		y++
+	}
+
+	if len(placedNodes) != len(diag.Nodes) {
+		for _, n := range diag.getNodes() {
+			_, ok := placedNodes[n]
+			if ok {
+				continue
+			}
+			placedNodes[n] = true
+			diag.Grid.Set(x, y, n)
+			y += diag.placeInGrid(n, x+1, y, placedNodes)
+			y++
+		}
 	}
 }
 

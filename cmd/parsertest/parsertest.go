@@ -28,7 +28,7 @@ func main() {
 			A -> B -> C -> D;
 			B -> F -> G -> X -> Y;
 			C -> E;
-			H -> I -> J;
+			H -> I -> J -> H;
 		}`
 
 	got, err := blockdiag.ParseReader("simple.diag", strings.NewReader(simple))

@@ -319,6 +319,38 @@ blockdiag{
  .   .   .   .   .   .   .   .   .   .  
  .   .   .   .   .   .   .   .   .   .  
 `,
+		}, {
+			`
+blockdiag{
+	A -> B -> C -> B; # Circular with proper Start-Node
+}
+`, `[A] [B] [C]  .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+`,
+		}, {
+			`
+blockdiag{
+	A -> B -> C -> A; # Circular without Start-Node
+}
+`, `[A] [B] [C]  .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .  
+`,
 		},
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
@@ -329,9 +361,6 @@ blockdiag{
 		if !ok {
 			t.Fatalf("assertion error: %s should parse to diag", test.input)
 		}
-		// if gotDiag.PlaceInGrid() != test.circular {
-		// 	t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
-		// }
 		gotDiag.PlaceInGrid()
 		if gotDiag.GridString() != test.output {
 			t.Fatalf("expected: \n|%s|, got: \n|%s|", test.output, gotDiag.GridString())
