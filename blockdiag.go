@@ -241,9 +241,16 @@ func NewSizedGrid(x, y int) grid {
 	return g
 }
 
-func (g grid) Set(x, y int, n *Node) error {
-	if x < 0 || y < 0 || x >= len(g[0]) || y >= len(g) {
+func (g grid) Set(x, y int, n *Node, diag *Diag) error {
+	if x < 0 || y < 0 || x >= len(g[0]) {
 		return fmt.Errorf("out of bound x or y, %d, %d", x, y)
+	}
+
+	if y >= len(g) {
+		for i := len(g); i <= y; i++ {
+			g = *(g.appendRow())
+			diag.Grid = g
+		}
 	}
 
 	g[y][x] = n
@@ -268,6 +275,12 @@ func (g grid) String() string {
 	return ret
 }
 
+func (g *grid) appendRow() *grid {
+	gVal := *g
+	gVal = append(gVal, make([]*Node, len(gVal[0])))
+	return &gVal
+}
+
 func (diag *Diag) PlaceInGrid() {
 	var x, y int
 
@@ -279,7 +292,10 @@ func (diag *Diag) PlaceInGrid() {
 			continue
 		}
 		placedNodes[n] = true
-		diag.Grid.Set(x, y, n)
+		err := diag.Grid.Set(x, y, n, diag)
+		if err != nil {
+			panic("Set failed")
+		}
 		y += diag.placeInGrid(n, x+1, y, placedNodes)
 		y++
 	}
@@ -291,7 +307,10 @@ func (diag *Diag) PlaceInGrid() {
 				continue
 			}
 			placedNodes[n] = true
-			diag.Grid.Set(x, y, n)
+			err := diag.Grid.Set(x, y, n, diag)
+			if err != nil {
+				panic("Set failed")
+			}
 			y += diag.placeInGrid(n, x+1, y, placedNodes)
 			y++
 		}
@@ -306,7 +325,10 @@ func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool)
 			continue
 		}
 		placedNodes[n] = true
-		diag.Grid.Set(x, y+addedNodes, n)
+		err := diag.Grid.Set(x, y+addedNodes, n, diag)
+		if err != nil {
+			panic("Set failed")
+		}
 
 		addedNodes += diag.placeInGrid(n, x+1, y+addedNodes, placedNodes)
 		addedNodes++
