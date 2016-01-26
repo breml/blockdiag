@@ -368,6 +368,22 @@ blockdiag{
 [J]  .   .   .   .   .   .   .   .   .  
 [K]  .   .   .   .   .   .   .   .   .  
 `,
+		}, {
+			`
+blockdiag{
+	A -> B -> C -> D -> E -> F -> G -> H -> I -> J -> K; # 11 Cols
+}
+`, `[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] 
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+ .   .   .   .   .   .   .   .   .   .   .  
+`,
 		},
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
