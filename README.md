@@ -21,3 +21,4 @@ http://blockdiag.com/en/index.html
 - [ ] Allow "diagram" and "blockdiag" as type
 - [ ] Check with gometalinter
 - [ ] Check with go cover
+- [ ] Use `type grid *[][]*Node`?
