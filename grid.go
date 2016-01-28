@@ -7,7 +7,7 @@ import (
 type grid [][]*Node
 
 func NewGrid() grid {
-	const minSize = 10
+	const minSize = 1
 
 	return NewSizedGrid(minSize, minSize)
 }
@@ -57,7 +57,7 @@ func (g grid) String() string {
 			if n != nil {
 				ret += "[" + string(n.Name[0]) + "] "
 			} else {
-				ret += " .  "
+				ret += "    "
 			}
 		}
 		ret += "\n"
