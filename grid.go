@@ -43,6 +43,8 @@ func (g grid) Set(x, y int, n *Node, diag *Diag) error {
 	}
 
 	g[y][x] = n
+	n.PosX = x
+	n.PosY = y
 
 	return nil
 }
