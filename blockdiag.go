@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	linq "github.com/ahmetalpbalkan/go-linq"
+	"github.com/ahmetalpbalkan/go-linq"
 )
 
 type Diag struct {
@@ -27,6 +27,7 @@ func NewDiag() Diag {
 
 	return diag
 }
+
 func (diag *Diag) GoString() string {
 	var edges []string
 	var ret string
