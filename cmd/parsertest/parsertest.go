@@ -31,6 +31,11 @@ func main() {
 			H -> I -> J -> H;
 		}`
 
+	simple =
+		`blockdiag {
+			A -> B;
+		}`
+
 	got, err := blockdiag.ParseReader("simple.diag", strings.NewReader(simple))
 	if err != nil {
 		log.Fatal("Parse error:", err)
@@ -38,7 +43,7 @@ func main() {
 	diag := got.(blockdiag.Diag)
 
 	diag.PlaceInGrid()
-	fmt.Printf("%s\n", diag.GridString())
+	fmt.Printf("%s\n", diag.String())
 
 	// fmt.Println("=", diag)
 

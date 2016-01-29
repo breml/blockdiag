@@ -28,6 +28,76 @@ func NewDiag() Diag {
 	return diag
 }
 
+func (diag *Diag) String() string {
+	var outGrid [][]rune
+
+	const (
+		rowFactor = 2
+		colFactor = 7
+	)
+
+	// Prepare Output Grid
+	outGrid = make([][]rune, len(diag.Grid)*rowFactor)
+	for y := 0; y < len(outGrid); y++ {
+		outGrid[y] = make([]rune, len(diag.Grid[0])*colFactor)
+		for x, _ := range outGrid[y] {
+			outGrid[y][x] = ' '
+		}
+	}
+
+	// Place Nodes
+	for y, _ := range diag.Grid {
+		for x, n := range diag.Grid[y] {
+			if n != nil {
+				// fmt.Println(y, x)
+				outGrid[y*rowFactor+1][x*colFactor] = '['
+				outGrid[y*rowFactor+1][x*colFactor+1] = rune(n.Name[0])
+				outGrid[y*rowFactor+1][x*colFactor+2] = ']'
+				// ret += "[" + string(n.Name[0]) + "]"
+				// if x < len(diag.Grid[y])-1 && diag.Grid[y][x+1] != nil {
+				// 	if len(n.getChildNodes()) > 1 {
+				// 		ret += "|->"
+				// 	} else {
+				// 		ret += "-->"
+				// 	}
+				// }
+				// } else {
+				// 	ret += "      "
+			}
+		}
+		//ret += "\n"
+	}
+
+	// Place Edges
+	// Unicode Arrows
+	// https://en.wikipedia.org/wiki/Arrow_(symbol)#Arrows_in_Unicode
+	// https://en.wikipedia.org/wiki/Supplemental_Arrows-B
+	// https://en.wikipedia.org/wiki/Tee_(symbol)
+	// https://en.wikipedia.org/wiki/Up_tack
+	// http://unicode-table.com/de/007C/ Senkrechter Strich
+	// http://unicode-table.com/de/23AF/ Waagrechter Strich
+	// http://unicode-table.com/de/blocks/miscellaneous-technical/
+	// http://www.asciitable.com/
+	// https://de.wikipedia.org/wiki/Unicodeblock_Rahmenzeichnung
+	for _, e := range diag.Edges {
+		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
+		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+3] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+4] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+5] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+6] = '>'
+		}
+	}
+
+	// Prepare Output String
+	ret := ""
+	for _, rs := range outGrid {
+		ret += string(rs) + "\n"
+	}
+
+	return ret
+}
+
 func (diag *Diag) GoString() string {
 	var edges []string
 	var ret string
