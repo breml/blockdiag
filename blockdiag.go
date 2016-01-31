@@ -82,10 +82,10 @@ func (diag *Diag) String() string {
 	for _, e := range diag.Edges {
 		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+3] = '\u2500'
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+4] = '\u2500'
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+5] = '\u2500'
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX+6] = '>'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = '\u2500'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = '>'
 		}
 	}
 
