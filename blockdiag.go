@@ -95,14 +95,16 @@ func (diag *Diag) String() string {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
-		if e.Start.PosY+1 == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
+		if e.Start.PosY < e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			// if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
 			outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
 			// }
-			outGrid[(e.Start.PosY+1)*rowFactor][e.Start.PosX*colFactor+4] = vertical
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+			for i := 1; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
+				outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] = vertical
+			}
+			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
+			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
+			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
 	}
 
