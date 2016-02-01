@@ -28,6 +28,14 @@ func NewDiag() Diag {
 	return diag
 }
 
+const (
+	arrowRight     = '>'
+	horizontal     = '\u2500' // ─ http://unicode-table.com/en/2500/
+	vertical       = '\u2502' // │ http://unicode-table.com/en/2502/
+	horizontalDown = '\u252C' // ┬ http://unicode-table.com/en/252C/
+	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
+)
+
 func (diag *Diag) String() string {
 	var outGrid [][]rune
 
@@ -82,19 +90,19 @@ func (diag *Diag) String() string {
 	for _, e := range diag.Edges {
 		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = '\u2500' // ─
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = '\u2500' // ─
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = '\u2500' // ─
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = '>'
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
 		if e.Start.PosY+1 == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
-			// if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == '\u2500' {
-			outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = '\u252C' // ┬
+			// if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
+			outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
 			// }
-			outGrid[(e.Start.PosY+1)*rowFactor][e.Start.PosX*colFactor+4] = '\u2502'   // │
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+4] = '\u2514' // └
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+5] = '\u2500' // ─
-			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+6] = '>'
+			outGrid[(e.Start.PosY+1)*rowFactor][e.Start.PosX*colFactor+4] = vertical
+			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
+			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
+			outGrid[(e.Start.PosY+1)*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
 	}
 
