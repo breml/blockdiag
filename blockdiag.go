@@ -87,7 +87,7 @@ func (diag *Diag) String() string {
 	// http://unicode-table.com/de/blocks/miscellaneous-technical/
 	// http://www.asciitable.com/
 	// https://de.wikipedia.org/wiki/Unicodeblock_Rahmenzeichnung
-	for _, e := range diag.Edges {
+	for _, e := range diag.getEdges() {
 		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
@@ -254,6 +254,15 @@ func (diag *Diag) getStartNodes() Nodes {
 	return startNodes
 }
 
+func (diag *Diag) getEdges() Edges {
+	var edges Edges
+	for _, e := range diag.Edges {
+		edges = append(edges, e)
+	}
+	sort.Sort(edges)
+	return edges
+}
+
 type Node struct {
 	Name  string
 	PosX  int
@@ -299,6 +308,30 @@ type Edge struct {
 	Start *Node
 	End   *Node
 	Name  string
+}
+
+type Edges []*Edge
+
+func (edges Edges) Len() int {
+	return len(edges)
+}
+
+func (edges Edges) Less(i, j int) bool {
+	return edges[i].Name < edges[j].Name
+}
+
+func (edges Edges) Swap(i, j int) {
+	edges[i], edges[j] = edges[j], edges[i]
+}
+
+func (edges Edges) String() string {
+	var s, delim string
+	sort.Sort(edges)
+	for _, e := range edges {
+		s += delim + e.Name
+		delim = ", "
+	}
+	return s
 }
 
 type nodes struct {
