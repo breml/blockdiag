@@ -34,6 +34,8 @@ const (
 	vertical       = '\u2502' // │ http://unicode-table.com/en/2502/
 	horizontalDown = '\u252C' // ┬ http://unicode-table.com/en/252C/
 	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
+	upLeft         = '\u2518' // ┘ http://unicode-table.com/en/2518/
+	downRight      = '\u250C' // ┌ http://unicode-table.com/en/250C/
 )
 
 func (diag *Diag) String() string {
@@ -105,6 +107,39 @@ func (diag *Diag) String() string {
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+		}
+		if e.Start.PosY > e.End.PosY {
+			if e.Start.PosX+1 == e.End.PosX {
+				// Go directly up and right
+
+				// // if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
+				// outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
+				// // }
+				// for i := 1; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
+				// 	outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] = vertical
+				// }
+				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
+				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
+				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+			} else {
+				// Go up until below End, go right until before End, go up and right into End
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+
+				// Todo: Go up, until on the right height, right below End
+
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
+
+				for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
+					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+				}
+
+				outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+
+				// Findout correct junction
+				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+
+			}
 		}
 	}
 
