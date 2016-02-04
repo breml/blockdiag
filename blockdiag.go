@@ -29,9 +29,11 @@ func NewDiag() Diag {
 }
 
 const (
+	empty          = ' '
 	arrowRight     = '>'
 	horizontal     = '\u2500' // ─ http://unicode-table.com/en/2500/
 	vertical       = '\u2502' // │ http://unicode-table.com/en/2502/
+	horizontalUp   = '\u2534' // ┴ http://unicode-table.com/en/2534/
 	horizontalDown = '\u252C' // ┬ http://unicode-table.com/en/252C/
 	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
 	upLeft         = '\u2518' // ┘ http://unicode-table.com/en/2518/
@@ -93,7 +95,13 @@ func (diag *Diag) String() string {
 		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
+			if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
+			} else {
+				if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == upLeft {
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+				}
+			}
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
@@ -124,7 +132,11 @@ func (diag *Diag) String() string {
 			} else {
 				// Go up until below End, go right until before End, go up and right into End
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+				if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+				} else {
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+				}
 
 				// Todo: Go up, until on the right height, right below End
 

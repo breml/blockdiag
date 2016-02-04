@@ -34,8 +34,9 @@ func main() {
 	simple =
 		`blockdiag {
 			A -> B -> C;
-			B -> D -> E;
+			B -> D -> E -> H;
 			A -> F -> E;
+			F -> G;
 			X -> Y;
 		}`
 
