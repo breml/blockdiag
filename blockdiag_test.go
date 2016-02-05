@@ -284,14 +284,14 @@ func TestPlaceInGrid(t *testing.T) {
 		input  string
 		output string
 	}{
-		/*		{
-							`
-				blockdiag{
-					A -> B -> C;
-				}
-				`, `[A] [B] [C]
-				`,
-						},*/
+		{
+			`
+blockdiag{
+	A -> B -> C;
+}
+`, `[A] [B] [C] 
+`,
+		},
 		{
 			`
 blockdiag{
@@ -353,7 +353,7 @@ blockdiag{
 		}
 		gotDiag.PlaceInGrid()
 		if gotDiag.GridString() != test.output {
-			t.Fatalf("expected: \n%s, got: \n%s", test.output, gotDiag.GridString())
+			t.Fatalf("expected: \n%s, got: \n%s", strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(gotDiag.GridString(), " ", "\u00B7", -1))
 		}
 	}
 }
