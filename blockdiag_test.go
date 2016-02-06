@@ -357,3 +357,57 @@ blockdiag{
 		}
 	}
 }
+
+func TestDiagString(t *testing.T) {
+	for _, test := range []struct {
+		input  string
+		output string
+	}{
+		{
+			`
+blockdiag{
+	# One node, no connections
+	A;
+}
+`, `       
+[A]    
+`,
+		},
+		{
+			`
+blockdiag{
+	# Two connected nodes
+	A -> B;
+}
+`, `              
+[A]───>[B]    
+`,
+		},
+		{
+			`
+blockdiag{
+	# From one node to two nodes
+	A -> B;
+	A -> C;
+}
+`, `              
+[A]─┬─>[B]    
+    │         
+    └─>[C]    
+`,
+		},
+	} {
+		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
+		if err != nil {
+			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+		}
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
+		}
+		gotDiag.PlaceInGrid()
+		if gotDiag.String() != test.output {
+			t.Fatalf("expected: \n%s, got: \n%s", strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(gotDiag.String(), " ", "\u00B7", -1))
+		}
+	}
+}
