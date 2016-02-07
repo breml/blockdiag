@@ -125,6 +125,10 @@ func (diag *Diag) String() string {
 		if e.Start.PosY > e.End.PosY {
 			if e.Start.PosX+1 == e.End.PosX {
 				// Go directly up and right
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = vertical
+				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 				// // if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
 				// outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown

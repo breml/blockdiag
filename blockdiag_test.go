@@ -410,6 +410,18 @@ blockdiag{
     │         
     └─>[D]    
 `,
+		}, {
+			`
+blockdiag{
+	# Branch and merge
+	A -> B -> D;
+	A -> C -> D;
+}
+`, `                     
+[A]─┬─>[B]─┬─>[D]    
+    │      │         
+    └─>[C]─┘         
+`,
 		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
