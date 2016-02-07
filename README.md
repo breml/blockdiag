@@ -22,3 +22,24 @@ http://blockdiag.com/en/index.html
 - [ ] Check with gometalinter
 - [ ] Check with go cover
 - [ ] Use `type grid *[][]*Node`?
+- [ ] Tests for text output
+- [ ] Support long block names in text output
+
+## Text Paint
+
+- [ ] Circular
+- [ ] blockdiag {
+			A -> B -> C;
+			B -> D -> E -> H;
+			A -> F -> E;
+			F -> G -> H;
+			H -> A;
+			X -> Y;
+		}
+- [ ] blockdiag {
+A -> B -> Z;
+A -> C -> Z;
+A -> D -> Z;
+A -> E -> Z;
+}
+- [ ] // Todo: Go up, until on the right height, right below End
