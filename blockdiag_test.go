@@ -395,6 +395,21 @@ blockdiag{
     │         
     └─>[C]    
 `,
+		}, {
+			`
+blockdiag{
+	# From one node to three nodes
+	A -> B;
+	A -> C;
+	A -> D;
+}
+`, `              
+[A]─┬─>[B]    
+    │         
+    ├─>[C]    
+    │         
+    └─>[D]    
+`,
 		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
