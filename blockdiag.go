@@ -127,7 +127,9 @@ func (diag *Diag) String() string {
 				// Go directly up and right
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = vertical
+				for i := 0; i < (e.Start.PosY-e.End.PosY)*rowFactor-1; i++ {
+					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+				}
 				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 				// // if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
@@ -140,26 +142,45 @@ func (diag *Diag) String() string {
 				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 			} else {
-				// Go up until below End, go right until before End, go up and right into End
-				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-				if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
-					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+				// Check if the straight way is free
+				straight := true
+				for i := 1; i < (e.End.PosX - e.Start.PosX); i++ {
+					if diag.Grid[e.Start.PosY][e.Start.PosX+i] != nil {
+						straight = false
+						break
+					}
+				}
+
+				if straight {
+					for i := 0; i < (e.End.PosX-e.Start.PosX-1)*colFactor+1; i++ {
+						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
+					}
+					outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = upLeft
+					outGrid[e.End.PosY*rowFactor+2][e.End.PosX*colFactor-3] = vertical
+					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+
 				} else {
-					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+					// Go up until below End, go right until before End, go up and right into End
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+					if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
+						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+					} else {
+						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+					}
+
+					// Todo: Go up, until on the right height, right below End
+
+					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
+
+					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
+						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+					}
+
+					outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+
+					// Findout correct junction
+					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 				}
-
-				// Todo: Go up, until on the right height, right below End
-
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
-
-				for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
-					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
-				}
-
-				outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
-
-				// Findout correct junction
-				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 			}
 		}

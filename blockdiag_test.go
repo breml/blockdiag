@@ -422,6 +422,48 @@ blockdiag{
     │      │         
     └─>[C]─┘         
 `,
+		}, {
+			`
+blockdiag{
+	# Branch and merge two rows
+	A -> B -> C -> E;
+	A -> D -> E;
+}
+`, `                            
+[A]─┬─>[B]───>[C]─┬─>[E]    
+    │             │         
+    └─>[D]────────┘         
+`,
+		},
+
+		{
+			`
+blockdiag {
+	# Branch and merge two rows with alternative way
+	A -> B -> C -> D;
+	A -> E -> D;
+	E -> F;
+}
+`, `                            
+[A]─┬─>[B]───>[C]─┬─>[D]    
+    │      ┌──────┘         
+    └─>[E]─┴─>[F]           
+`,
+		}, {
+			`
+blockdiag{
+	# Branch and merge over two cols
+	A -> B -> E;
+	A -> C;
+	A -> D -> E;
+}
+`, `                     
+[A]─┬─>[B]─┬─>[E]    
+    │      │         
+    ├─>[C] │         
+    │      │         
+    └─>[D]─┘         
+`,
 		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
