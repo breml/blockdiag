@@ -361,6 +361,15 @@ blockdiag {
 `, `[A]     [B] 
     [C]     
 `,
+		}, {
+			`
+blockdiag {
+	A -> B;
+	A -> C -> D -> B;
+}
+`, `[A]         [B] 
+    [C] [D]     
+`,
 		},
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
@@ -492,6 +501,19 @@ blockdiag {
 [A]─┬──────┬─>[B]    
     │      │         
     └─>[C]─┘         
+`,
+		},
+		{
+			`
+blockdiag {
+	# Branch and merge three cols (Variant 2)
+	A -> B;
+	A -> C -> D -> B;
+}
+`, `                            
+[A]─┬─────────────┬─>[B]    
+    │             │         
+    └─>[C]───>[D]─┘         
 `,
 		},
 		{

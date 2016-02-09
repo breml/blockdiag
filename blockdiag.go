@@ -431,8 +431,7 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 		_, ok := placedNodes[n]
 		if ok {
 			if node.PosX >= n.PosX {
-				fmt.Println("Placed, but wrong position: from:", node, "to", n, "already set")
-				diag.moveDependingNodesRight(n, placedNodes)
+				diag.moveDependingNodesRight(n, placedNodes, node.PosX-n.PosX+1)
 			}
 			continue
 		}
@@ -452,12 +451,12 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 	return addedNodes
 }
 
-func (diag *Diag) moveDependingNodesRight(node *Node, placedNodes map[*Node]bool) {
+func (diag *Diag) moveDependingNodesRight(node *Node, placedNodes map[*Node]bool, count int) {
 	for _, n := range node.getChildNodes() {
-		diag.moveDependingNodesRight(n, placedNodes)
+		diag.moveDependingNodesRight(n, placedNodes, count)
 	}
 	oldX := node.PosX
-	err := diag.Grid.Set(oldX+1, node.PosY, node, diag)
+	err := diag.Grid.Set(oldX+count, node.PosY, node, diag)
 	if err != nil {
 		panic("Set failed")
 	}
