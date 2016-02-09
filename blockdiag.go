@@ -62,38 +62,15 @@ func (diag *Diag) String() string {
 	for y, _ := range diag.Grid {
 		for x, n := range diag.Grid[y] {
 			if n != nil {
-				// fmt.Println(y, x)
 				outGrid[y*rowFactor+1][x*colFactor] = '['
 				outGrid[y*rowFactor+1][x*colFactor+1] = rune(n.Name[0])
 				outGrid[y*rowFactor+1][x*colFactor+2] = ']'
-				// ret += "[" + string(n.Name[0]) + "]"
-				// if x < len(diag.Grid[y])-1 && diag.Grid[y][x+1] != nil {
-				// 	if len(n.getChildNodes()) > 1 {
-				// 		ret += "|->"
-				// 	} else {
-				// 		ret += "-->"
-				// 	}
-				// }
-				// } else {
-				// 	ret += "      "
 			}
 		}
-		//ret += "\n"
 	}
 
 	// Place Edges
-	// Unicode Arrows
-	// https://en.wikipedia.org/wiki/Arrow_(symbol)#Arrows_in_Unicode
-	// https://en.wikipedia.org/wiki/Supplemental_Arrows-B
-	// https://en.wikipedia.org/wiki/Tee_(symbol)
-	// https://en.wikipedia.org/wiki/Up_tack
-	// http://unicode-table.com/de/007C/ Senkrechter Strich
-	// http://unicode-table.com/de/23AF/ Waagrechter Strich
-	// http://unicode-table.com/de/blocks/miscellaneous-technical/
-	// http://www.asciitable.com/
-	// https://de.wikipedia.org/wiki/Unicodeblock_Rahmenzeichnung
 	for _, e := range diag.getEdges() {
-		fmt.Println(e.Start.Name, e.Start.PosX, e.Start.PosY, "|", e.End.Name, e.End.PosX, e.End.PosY)
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
@@ -131,16 +108,6 @@ func (diag *Diag) String() string {
 					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
 				}
 				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
-
-				// // if outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] == horizontal {
-				// outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
-				// // }
-				// for i := 1; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
-				// 	outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] = vertical
-				// }
-				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
-				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
-				// outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 			} else {
 				// Check if the straight way is free
 				straight := true
@@ -216,7 +183,6 @@ func (diag *Diag) NodesString() string {
 	var nodes []string
 
 	for _, node := range diag.Nodes {
-		// nodes = append(nodes, fmt.Sprintf("%s (%d, %d)", node.Name, node.PosX, node.PosY))
 		nodes = append(nodes, node.Name)
 	}
 	sort.Strings(nodes)
