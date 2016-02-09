@@ -501,7 +501,7 @@ blockdiag{
 		}
 		gotDiag.PlaceInGrid()
 		if gotDiag.String() != test.output {
-			t.Fatalf("expected: \n%s, got: \n%s", strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(gotDiag.String(), " ", "\u00B7", -1))
+			t.Fatalf("for: \n%s\nexpected: \n%s\ngot: \n%s", test.input, strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(gotDiag.String(), " ", "\u00B7", -1))
 		}
 	}
 }
