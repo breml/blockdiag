@@ -376,6 +376,19 @@ blockdiag{
 		{
 			`
 blockdiag{
+	# Two nodes, no connections
+	A;
+	B;
+}
+`, `       
+[A]    
+       
+[B]    
+`,
+		},
+		{
+			`
+blockdiag{
 	# Two connected nodes
 	A -> B;
 }
