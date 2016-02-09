@@ -126,9 +126,10 @@ func (diag *Diag) String() string {
 				} else {
 					// Go up until below End, go right until before End, go up and right into End
 					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-					if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
+					switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
+					case empty:
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
-					} else {
+					case upLeft:
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 					}
 
