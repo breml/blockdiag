@@ -26,6 +26,8 @@ http://blockdiag.com/en/index.html
 - [ ] Support long block names in text output
 - [ ] Code cleanup
 - [ ] Refactoring, if placeing part of edge, save what directions are already covered and add only new endpoints, decide the char in a later step
+- [ ] Self reference A -> A
+- [ ] Circular A -> B -> A
 
 ## Text Paint
 
