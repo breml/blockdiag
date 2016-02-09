@@ -232,13 +232,15 @@ func (diag *Diag) GridString() string {
 }
 
 func (diag *Diag) FindCircular() bool {
-	for _, n := range diag.Nodes {
+	diag.Circular = nil
+
+	for _, n := range diag.getNodes() {
 		visitedNodes := &nodes{}
 
 		if !visitedNodes.exists(n.Name) {
 			visitedNodes.keys = append(visitedNodes.keys, n.Name)
 		}
-		for _, c := range n.getChildNodes() {
+		for _, c := range n.getChildNodes(false) {
 			diag.subFindCircular(c, visitedNodes)
 		}
 	}
@@ -257,12 +259,21 @@ func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 		}
 		circularNodes.keys = append(circularNodes.keys, n.Name)
 
+		closingEdgeStart := diag.Nodes[circularNodes.keys[len(circularNodes.keys)-2]]
+		closingEdgeEnd := diag.Nodes[circularNodes.keys[len(circularNodes.keys)-1]]
+		for _, e := range closingEdgeStart.Edges {
+			if e.End == closingEdgeEnd {
+				e.closeCircle = true
+				break
+			}
+		}
+
 		diag.Circular = append(diag.Circular, circularNodes)
 		return
 	}
 	visitedNodes.keys = append(visitedNodes.keys, n.Name)
 
-	for _, c := range n.getChildNodes() {
+	for _, c := range n.getChildNodes(false) {
 		diag.subFindCircular(c, visitedNodes)
 	}
 	visitedNodes.keys = visitedNodes.keys[:len(visitedNodes.keys)-1]
@@ -314,9 +325,9 @@ type Node struct {
 	Edges []*Edge
 }
 
-func (n *Node) getChildNodes() (children Nodes) {
+func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
 	for _, e := range n.Edges {
-		if e.Start == n && e.End != n {
+		if e.Start == n && e.End != n && (!e.closeCircle || includeCloseCircle) {
 			children = append(children, e.End)
 		}
 	}
@@ -349,9 +360,10 @@ func (nodes Nodes) String() string {
 }
 
 type Edge struct {
-	Start *Node
-	End   *Node
-	Name  string
+	Start       *Node
+	End         *Node
+	Name        string
+	closeCircle bool
 }
 
 type Edges []*Edge
@@ -392,6 +404,8 @@ func (n *nodes) exists(key string) bool {
 func (diag *Diag) PlaceInGrid() {
 	var x, y int
 
+	diag.FindCircular()
+
 	placedNodes := make(map[*Node]bool)
 
 	for _, n := range diag.getStartNodes() {
@@ -427,7 +441,7 @@ func (diag *Diag) PlaceInGrid() {
 
 func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bool) int {
 	addedNodes := 0
-	for _, n := range node.getChildNodes() {
+	for _, n := range node.getChildNodes(false) {
 		_, ok := placedNodes[n]
 		if ok {
 			if node.PosX >= n.PosX {
@@ -452,7 +466,7 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 }
 
 func (diag *Diag) moveDependingNodesRight(node *Node, placedNodes map[*Node]bool, count int) {
-	for _, n := range node.getChildNodes() {
+	for _, n := range node.getChildNodes(false) {
 		diag.moveDependingNodesRight(n, placedNodes, count)
 	}
 	oldX := node.PosX

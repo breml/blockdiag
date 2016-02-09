@@ -304,21 +304,22 @@ blockdiag{
     [E]     
 `,
 		},
-		// 		{
-		// 			`
-		// blockdiag{
-		// 	A -> B -> C -> B; # Circular with proper Start-Node
-		// }
-		// `, `[A] [B] [C]
-		// `,
-		// 		}, {
-		// 			`
-		// blockdiag{
-		// 	A -> B -> C -> A; # Circular without Start-Node
-		// }
-		// `, `[A] [B] [C]
-		// `,
-		// 		},
+		{
+			`
+blockdiag{
+	A -> B -> C -> B; # Circular with proper Start-Node
+}
+`, `[A] [B] [C] 
+`,
+		},
+		{
+			`
+blockdiag{
+	A -> B -> C -> A; # Circular without Start-Node
+}
+`, `[A] [B] [C] 
+`,
+		},
 		{
 			`
 blockdiag{
