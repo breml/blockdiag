@@ -451,7 +451,7 @@ blockdiag{
 		}, {
 			`
 blockdiag{
-	# Branch and merge two rows
+	# Branch and merge two cols
 	A -> B -> C -> E;
 	A -> D -> E;
 }
@@ -464,7 +464,7 @@ blockdiag{
 		{
 			`
 blockdiag {
-	# Branch and merge two rows with alternative way
+	# Branch and merge two cols with alternative way
 	A -> B -> C -> D;
 	A -> E -> D;
 	E -> F;
@@ -477,7 +477,7 @@ blockdiag {
 		}, {
 			`
 blockdiag{
-	# Branch and merge over two cols
+	# Branch and merge over two rows
 	A -> B -> E;
 	A -> C;
 	A -> D -> E;
