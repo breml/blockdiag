@@ -73,12 +73,11 @@ func (diag *Diag) String() string {
 	for _, e := range diag.getEdges() {
 		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-			if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == empty {
+			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
+			case empty:
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
-			} else {
-				if outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] == upLeft {
-					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
-				}
+			case upLeft:
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 			}
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
