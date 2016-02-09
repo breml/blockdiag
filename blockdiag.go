@@ -71,7 +71,7 @@ func (diag *Diag) String() string {
 
 	// Place Edges
 	for _, e := range diag.getEdges() {
-		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
+		if e.Start.PosY == e.End.PosY && e.Start.PosX < e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 			case empty:
@@ -79,8 +79,10 @@ func (diag *Diag) String() string {
 			case upLeft:
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 			}
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+			for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor+2; i++ {
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4+i] = horizontal
+			}
+			outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 		}
 		if e.Start.PosY < e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
@@ -423,11 +425,15 @@ func (diag *Diag) PlaceInGrid() {
 	}
 }
 
-func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool) int {
+func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bool) int {
 	addedNodes := 0
-	for _, n := range n.getChildNodes() {
+	for _, n := range node.getChildNodes() {
 		_, ok := placedNodes[n]
 		if ok {
+			if node.PosX >= n.PosX {
+				fmt.Println("Placed, but wrong position: from:", node, "to", n, "already set")
+				diag.moveDependingNodesRight(n, placedNodes)
+			}
 			continue
 		}
 		placedNodes[n] = true
@@ -444,4 +450,19 @@ func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool)
 		return addedNodes - 1
 	}
 	return addedNodes
+}
+
+func (diag *Diag) moveDependingNodesRight(node *Node, placedNodes map[*Node]bool) {
+	for _, n := range node.getChildNodes() {
+		diag.moveDependingNodesRight(n, placedNodes)
+	}
+	oldX := node.PosX
+	err := diag.Grid.Set(oldX+1, node.PosY, node, diag)
+	if err != nil {
+		panic("Set failed")
+	}
+	err = diag.Grid.Set(oldX, node.PosY, nil, diag)
+	if err != nil {
+		panic("Set failed")
+	}
 }
