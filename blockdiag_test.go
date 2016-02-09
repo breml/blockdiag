@@ -399,6 +399,19 @@ blockdiag{
 		{
 			`
 blockdiag{
+	# Two seperate streams
+	A -> B;
+	C -> D;
+}
+`, `              
+[A]───>[B]    
+              
+[C]───>[D]    
+`,
+		},
+		{
+			`
+blockdiag{
 	# From one node to two nodes
 	A -> B;
 	A -> C;
@@ -448,7 +461,6 @@ blockdiag{
     └─>[D]────────┘         
 `,
 		},
-
 		{
 			`
 blockdiag {
