@@ -24,6 +24,8 @@ http://blockdiag.com/en/index.html
 - [ ] Use `type grid *[][]*Node`?
 - [ ] Tests for text output
 - [ ] Support long block names in text output
+- [ ] Code cleanup
+- [ ] Refactoring, if placeing part of edge, save what directions are already covered and add only new endpoints, decide the char in a later step
 
 ## Text Paint
 
