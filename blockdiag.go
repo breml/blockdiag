@@ -39,6 +39,7 @@ const (
 	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
 	upLeft         = '\u2518' // ┘ http://unicode-table.com/en/2518/
 	downRight      = '\u250C' // ┌ http://unicode-table.com/en/250C/
+	fourWay        = '\u253C' // ┼ http://unicode-table.com/en/253C/
 )
 
 func (diag *Diag) String() string {
@@ -83,7 +84,12 @@ func (diag *Diag) String() string {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
 		if e.Start.PosY < e.End.PosY && e.Start.PosX+1 == e.End.PosX {
-			outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
+			switch outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] {
+			case horizontal:
+				outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
+			case horizontalUp:
+				outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = fourWay
+			}
 			for i := 1; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
 				switch outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] {
 				case empty:

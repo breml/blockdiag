@@ -421,7 +421,8 @@ blockdiag{
     │         
     └─>[C]    
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	# From one node to three nodes
@@ -436,7 +437,8 @@ blockdiag{
     │         
     └─>[D]    
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	# Branch and merge
@@ -448,7 +450,8 @@ blockdiag{
     │      │         
     └─>[C]─┘         
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	# Branch and merge two cols
@@ -474,7 +477,25 @@ blockdiag {
     │      ┌──────┘         
     └─>[E]─┴─>[F]           
 `,
-		}, {
+		},
+		{
+			`
+blockdiag {
+	# Branch and merge two rows with two alternative ways
+	A -> B -> C -> D;
+	A -> E -> D;
+	E -> F;
+	E -> G;
+}
+`, `                            
+[A]─┬─>[B]───>[C]─┬─>[D]    
+    │      ┌──────┘         
+    └─>[E]─┼─>[F]           
+           │                
+           └─>[G]           
+`,
+		},
+		{
 			`
 blockdiag{
 	# Branch and merge over two rows
