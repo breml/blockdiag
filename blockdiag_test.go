@@ -6,17 +6,16 @@ import (
 	"testing"
 )
 
-func TestShouldParser(t *testing.T) {
+func TestShouldParse(t *testing.T) {
 	for _, test := range []struct {
-		description string
-		input       string
-		nodes       []string
-		edges       []string
-		attributes  map[string]string
+		input      string
+		nodes      []string
+		edges      []string
+		attributes map[string]string
 	}{
 		{
-			"Empty diagram",
 			`
+# Empty diagram
 blockdiag {}
 `,
 			[]string{},
@@ -24,8 +23,8 @@ blockdiag {}
 			map[string]string{},
 		},
 		{
-			"Single Node",
 			`
+# Single Node
 blockdiag {
 	A;
 }
@@ -36,8 +35,8 @@ blockdiag {
 		},
 		{
 			// TODO Add test case for node chain without tailing ;
-			"Node chain",
 			`
+# Node chain
 blockdiag {
 	A -> B;
 }
@@ -47,8 +46,8 @@ blockdiag {
 			map[string]string{},
 		},
 		{
-			"Multiple chains, using same nodes",
 			`
+# Multiple chains, using same nodes
 blockdiag {
 	A -> B -> C;
 	A -> D;
@@ -59,8 +58,8 @@ blockdiag {
 			map[string]string{},
 		},
 		{
-			"Self reference",
 			`
+# Self reference
 blockdiag {
 	A -> A;
 }
@@ -70,7 +69,6 @@ blockdiag {
 			map[string]string{},
 		},
 		{
-			"Comment",
 			`
 # Comment
 blockdiag # Comment
@@ -85,8 +83,8 @@ blockdiag # Comment
 			map[string]string{},
 		},
 		{
-			"Multi Char Node Names",
 			`
+# Multi Char Node Names
 blockdiag
 {
 	MultiCharNodeName1;
@@ -97,8 +95,8 @@ blockdiag
 			map[string]string{},
 		},
 		{
-			"Digramm Attributes",
 			`
+# Diagram Attributes
 blockdiag
 {
 	node_width = 128;
@@ -112,8 +110,8 @@ blockdiag
 			},
 		},
 		{
-			"Digramm type 'diagram'",
 			`
+# Digram type 'diagram'
 diagram
 {
 	A;
@@ -126,17 +124,17 @@ diagram
 	} {
 		got, err := ParseReader("shouldparse.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("%s: parse error: %s with input %s", test.description, err, test.input)
+			t.Fatalf("should parse, but did give an error: %s with input %s", err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
-			t.Fatalf("%s: assertion error: %s should parse to diag", test.description, test.input)
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
 		}
 		if gotDiag.NodesString() != strings.Join(test.nodes, ", ") {
-			t.Fatalf("%s: nodes error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(test.nodes, ", "), gotDiag.NodesString())
+			t.Fatalf("nodes error: %s, expected '%s', got: '%s'", test.input, strings.Join(test.nodes, ", "), gotDiag.NodesString())
 		}
 		if gotDiag.EdgesString() != strings.Join(test.edges, ", ") {
-			t.Fatalf("%s edges error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(test.edges, ", "), gotDiag.EdgesString())
+			t.Fatalf("edges error: %s, expected '%s', got: '%s'", test.input, strings.Join(test.edges, ", "), gotDiag.EdgesString())
 		}
 
 		var attributes []string
@@ -145,26 +143,25 @@ diagram
 		}
 		sort.Strings(attributes)
 		if gotDiag.AttributesString() != strings.Join(attributes, "\n") {
-			t.Fatalf("%s attributes error: %s, expected '%s', got: '%s'", test.description, test.input, strings.Join(attributes, "\n"), gotDiag.AttributesString())
+			t.Fatalf("attributes error: %s, expected '%s', got: '%s'", test.input, strings.Join(attributes, "\n"), gotDiag.AttributesString())
 		}
 	}
 }
 
 func TestShouldNotParse(t *testing.T) {
 	for _, test := range []struct {
-		description string
-		input       string
+		input string
 	}{
 		{
-			"No block",
 			`
+# No block
 blockdiag
 `,
 		},
 	} {
 		_, err := ParseReader("shouldnotparse.diag", strings.NewReader(test.input))
 		if err == nil {
-			t.Fatalf("%s: should not parse, but didn't give an error with input %s", test.description, test.input)
+			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
 		}
 	}
 }
@@ -176,6 +173,7 @@ func TestCircular(t *testing.T) {
 	}{
 		{
 			`
+# Single node, not circular
 blockdiag{
 	A;
 }
@@ -184,6 +182,7 @@ blockdiag{
 		},
 		{
 			`
+# Three steps straight, not circular
 blockdiag{
 	A -> B -> C;
 }
@@ -192,6 +191,7 @@ blockdiag{
 		},
 		{
 			`
+# Self reference, not circular
 blockdiag{
 	A -> A;
 }
@@ -200,6 +200,7 @@ blockdiag{
 		},
 		{
 			`
+# Three nodes, circular
 blockdiag{
 	A -> B -> C -> A;
 }
@@ -207,9 +208,9 @@ blockdiag{
 			true,
 		},
 	} {
-		got, err := ParseReader("shouldnotparse.diag", strings.NewReader(test.input))
+		got, err := ParseReader("circular.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+			t.Fatalf("should parse, but did give an error: %s with input %s", err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
@@ -228,6 +229,7 @@ func TestGetStartNodes(t *testing.T) {
 	}{
 		{
 			`
+# Three nodes straight
 blockdiag{
 	A -> B -> C;
 }
@@ -236,6 +238,7 @@ blockdiag{
 		},
 		{
 			`
+# Multiple disjunct process lines
 blockdiag {
 	A -> B -> C;
 	D;
@@ -246,6 +249,7 @@ blockdiag {
 		},
 		{
 			`
+# Multiple disjunct process lines 2
 blockdiag {
 	D;
 	E -> F;
@@ -257,15 +261,12 @@ blockdiag {
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+			t.Fatalf("should parse, but did give an error: %s with input %s", err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
 			t.Fatalf("assertion error: %s should parse to diag", test.input)
 		}
-		// if gotDiag.PlaceInGrid() != test.circular {
-		// 	t.Fatalf("expect %s to be circular == %t", test.input, test.circular)
-		// }
 		startNodes := gotDiag.getStartNodes()
 		if len(startNodes) != len(test.startNodes) {
 			t.Fatalf("Start Nodes count wrong, expected: %s, got: %s", strings.Join(test.startNodes, ", "), startNodes)
@@ -375,7 +376,7 @@ blockdiag {
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+			t.Fatalf("should parse, but did give an error: %s with input %s", err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
@@ -570,7 +571,7 @@ blockdiag{
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {
-			t.Fatalf("should not parse, but didn't give an error with input %s", test.input)
+			t.Fatalf("should parse, but did give an error: %s with input %s", err, test.input)
 		}
 		gotDiag, ok := got.(Diag)
 		if !ok {
