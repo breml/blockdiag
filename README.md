@@ -8,17 +8,17 @@ http://blockdiag.com/en/index.html
 
 # Todo
 
-- [ ] Map Nodes on raster
-- [ ] Find start Node
+- [X] Map Nodes on raster
+- [X] Find start Node
 - [ ] Make last ; optional
 - [ ] Add attributes
-  - [ ] Diagramm
+  - [X] Diagramm
   - [ ] Nodes
   - [ ] Edges
 - [ ] Node Groups
 - [ ] Strings in Quotes
 - [ ] Diagram name
-- [ ] Allow "diagram" and "blockdiag" as type
+- [X] Allow "diagram" and "blockdiag" as type
 - [ ] Check with gometalinter
 - [ ] Check with go cover
 - [ ] Use `type grid *[][]*Node`?
@@ -28,6 +28,9 @@ http://blockdiag.com/en/index.html
 - [ ] Refactoring, if placeing part of edge, save what directions are already covered and add only new endpoints, decide the char in a later step
 - [ ] Self reference A -> A
 - [ ] Circular A -> B -> A
+- [ ] Refactoring API, only make neccessary functions, methods, types, etc. public
+- [ ] Split blockdiag into multiple files
+- [ ] Split blockdiag_test into multiple files
 
 ## Text Paint
 
