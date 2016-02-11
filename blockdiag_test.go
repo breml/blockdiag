@@ -584,6 +584,24 @@ blockdiag {
     └─>[D]─┘         
 `,
 		},
+		{
+			`
+blockdiag{
+	# Branch and merge over two rows and two cols with sub-branch, 2
+	A -> B -> G;
+	A -> C -> D;
+	A -> E -> F;
+	F -> G;
+	E -> G;
+}
+`, `                            
+[A]─┬─>[B]────────┬─>[G]    
+    │             │         
+    ├─>[C]───>[D] │         
+    │      ┌──────┤         
+    └─>[E]─┴─>[F]─┘         
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {

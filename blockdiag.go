@@ -143,7 +143,7 @@ func (diag *Diag) String() string {
 					switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 					case empty:
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
-					case upLeft:
+					case horizontal:
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 					}
 
