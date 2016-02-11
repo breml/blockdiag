@@ -134,7 +134,14 @@ func (diag *Diag) String() string {
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
 					}
 					outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = upLeft
-					outGrid[e.End.PosY*rowFactor+2][e.End.PosX*colFactor-3] = vertical
+					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor+1; i++ {
+						switch outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] {
+						case empty:
+							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = vertical
+						case upLeft:
+							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = verticalLeft
+						}
+					}
 					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 				} else {
@@ -468,6 +475,23 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 		if ok {
 			if node.PosX >= n.PosX {
 				diag.moveDependingNodesRight(n, placedNodes, node.PosX-n.PosX+1)
+			}
+			if abs(node.PosY-n.PosY) > 1 {
+				for y := node.PosY - 1; y > n.PosY; y-- {
+					if diag.Grid[y][n.PosX] != nil {
+						move := true
+						parentNodes := diag.Grid[y][x]
+						for _, pn := range parentNodes.getParentNodes(false) {
+							if pn == node {
+								move = false
+							}
+						}
+						if move {
+							fmt.Println(node, n, diag.Grid[y][x])
+							diag.moveDependingNodesRight(n, placedNodes, 1)
+						}
+					}
+				}
 			}
 			continue
 		}
