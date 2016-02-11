@@ -347,6 +347,16 @@ func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
 	return
 }
 
+func (n *Node) getParentNodes(includeCloseCircle bool) (parents Nodes) {
+	for _, e := range n.Edges {
+		if e.End == n && e.Start != n && (!e.closeCircle || includeCloseCircle) {
+			parents = append(parents, e.Start)
+		}
+	}
+	sort.Sort(parents)
+	return
+}
+
 type Nodes []*Node
 
 func (nodes Nodes) Len() int {
