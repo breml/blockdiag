@@ -72,7 +72,7 @@ func (diag *Diag) String() string {
 
 	// Place Edges
 	for _, e := range diag.getEdges() {
-		if e.Start.PosY == e.End.PosY && e.Start.PosX+1 == e.End.PosX {
+		if e.Start.PosY == e.End.PosY && e.Start.PosX < e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 			case empty:
@@ -80,8 +80,10 @@ func (diag *Diag) String() string {
 			case upLeft:
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 			}
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+			for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor+2; i++ {
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4+i] = horizontal
+			}
+			outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 		}
 		if e.Start.PosY < e.End.PosY && e.Start.PosX+1 == e.End.PosX {
 			switch outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] {
@@ -236,13 +238,15 @@ func (diag *Diag) GridString() string {
 }
 
 func (diag *Diag) FindCircular() bool {
-	for _, n := range diag.Nodes {
+	diag.Circular = nil
+
+	for _, n := range diag.getNodes() {
 		visitedNodes := &nodes{}
 
 		if !visitedNodes.exists(n.Name) {
 			visitedNodes.keys = append(visitedNodes.keys, n.Name)
 		}
-		for _, c := range n.getChildNodes() {
+		for _, c := range n.getChildNodes(false) {
 			diag.subFindCircular(c, visitedNodes)
 		}
 	}
@@ -261,12 +265,21 @@ func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 		}
 		circularNodes.keys = append(circularNodes.keys, n.Name)
 
+		closingEdgeStart := diag.Nodes[circularNodes.keys[len(circularNodes.keys)-2]]
+		closingEdgeEnd := diag.Nodes[circularNodes.keys[len(circularNodes.keys)-1]]
+		for _, e := range closingEdgeStart.Edges {
+			if e.End == closingEdgeEnd {
+				e.closeCircle = true
+				break
+			}
+		}
+
 		diag.Circular = append(diag.Circular, circularNodes)
 		return
 	}
 	visitedNodes.keys = append(visitedNodes.keys, n.Name)
 
-	for _, c := range n.getChildNodes() {
+	for _, c := range n.getChildNodes(false) {
 		diag.subFindCircular(c, visitedNodes)
 	}
 	visitedNodes.keys = visitedNodes.keys[:len(visitedNodes.keys)-1]
@@ -318,9 +331,9 @@ type Node struct {
 	Edges []*Edge
 }
 
-func (n *Node) getChildNodes() (children Nodes) {
+func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
 	for _, e := range n.Edges {
-		if e.Start == n && e.End != n {
+		if e.Start == n && e.End != n && (!e.closeCircle || includeCloseCircle) {
 			children = append(children, e.End)
 		}
 	}
@@ -353,9 +366,10 @@ func (nodes Nodes) String() string {
 }
 
 type Edge struct {
-	Start *Node
-	End   *Node
-	Name  string
+	Start       *Node
+	End         *Node
+	Name        string
+	closeCircle bool
 }
 
 type Edges []*Edge
@@ -396,6 +410,8 @@ func (n *nodes) exists(key string) bool {
 func (diag *Diag) PlaceInGrid() {
 	var x, y int
 
+	diag.FindCircular()
+
 	placedNodes := make(map[*Node]bool)
 
 	for _, n := range diag.getStartNodes() {
@@ -429,11 +445,14 @@ func (diag *Diag) PlaceInGrid() {
 	}
 }
 
-func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool) int {
+func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bool) int {
 	addedNodes := 0
-	for _, n := range n.getChildNodes() {
+	for _, n := range node.getChildNodes(false) {
 		_, ok := placedNodes[n]
 		if ok {
+			if node.PosX >= n.PosX {
+				diag.moveDependingNodesRight(n, placedNodes, node.PosX-n.PosX+1)
+			}
 			continue
 		}
 		placedNodes[n] = true
@@ -450,4 +469,19 @@ func (diag *Diag) placeInGrid(n *Node, x int, y int, placedNodes map[*Node]bool)
 		return addedNodes - 1
 	}
 	return addedNodes
+}
+
+func (diag *Diag) moveDependingNodesRight(node *Node, placedNodes map[*Node]bool, count int) {
+	for _, n := range node.getChildNodes(false) {
+		diag.moveDependingNodesRight(n, placedNodes, count)
+	}
+	oldX := node.PosX
+	err := diag.Grid.Set(oldX+count, node.PosY, node, diag)
+	if err != nil {
+		panic("Set failed")
+	}
+	err = diag.Grid.Set(oldX, node.PosY, nil, diag)
+	if err != nil {
+		panic("Set failed")
+	}
 }

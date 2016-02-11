@@ -303,21 +303,24 @@ blockdiag{
         [D] 
     [E]     
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	A -> B -> C -> B; # Circular with proper Start-Node
 }
 `, `[A] [B] [C] 
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	A -> B -> C -> A; # Circular without Start-Node
 }
 `, `[A] [B] [C] 
 `,
-		}, {
+		},
+		{
 			`
 blockdiag{
 	A; B; C; D; E; F; G; H; I; J; K; # 11 Rows
@@ -340,6 +343,33 @@ blockdiag{
 	A -> B -> C -> D -> E -> F -> G -> H -> I -> J -> K; # 11 Cols
 }
 `, `[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] 
+`,
+		}, {
+			`
+blockdiag {
+	A -> B -> D;
+	A -> C -> D;
+}
+`, `[A] [B] [D] 
+    [C]     
+`,
+		}, {
+			`
+blockdiag {
+	A -> B;
+	A -> C -> B;
+}
+`, `[A]     [B] 
+    [C]     
+`,
+		}, {
+			`
+blockdiag {
+	A -> B;
+	A -> C -> D -> B;
+}
+`, `[A]         [B] 
+    [C] [D]     
 `,
 		},
 	} {
@@ -462,6 +492,32 @@ blockdiag{
 [A]─┬─>[B]───>[C]─┬─>[E]    
     │             │         
     └─>[D]────────┘         
+`,
+		},
+		{
+			`
+blockdiag {
+	# Branch and merge two cols (Variant 2)
+	A -> B;
+	A -> C -> B;
+}
+`, `                     
+[A]─┬──────┬─>[B]    
+    │      │         
+    └─>[C]─┘         
+`,
+		},
+		{
+			`
+blockdiag {
+	# Branch and merge three cols (Variant 2)
+	A -> B;
+	A -> C -> D -> B;
+}
+`, `                            
+[A]─┬─────────────┬─>[B]    
+    │             │         
+    └─>[C]───>[D]─┘         
 `,
 		},
 		{
