@@ -36,6 +36,7 @@ const (
 	horizontalUp   = '\u2534' // ┴ http://unicode-table.com/en/2534/
 	horizontalDown = '\u252C' // ┬ http://unicode-table.com/en/252C/
 	verticalRight  = '\u251C' // ├ http://unicode-table.com/en/251C/
+	verticalLeft   = '\u2524' // ┤ http://unicode-table.com/en/2524/
 	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
 	upLeft         = '\u2518' // ┘ http://unicode-table.com/en/2518/
 	downRight      = '\u250C' // ┌ http://unicode-table.com/en/250C/
@@ -110,7 +111,12 @@ func (diag *Diag) String() string {
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
 				for i := 0; i < (e.Start.PosY-e.End.PosY)*rowFactor-1; i++ {
-					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+					switch outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] {
+					case empty:
+						outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+					case upLeft:
+						outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = verticalLeft
+					}
 				}
 				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 			} else {

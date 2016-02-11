@@ -568,6 +568,22 @@ blockdiag{
     └─>[D]─┘         
 `,
 		},
+		{
+			`
+blockdiag {
+	# Multiple branches with merge
+	A -> B -> Z;
+	A -> C -> Z;
+	A -> D -> Z;
+}
+`, `                     
+[A]─┬─>[B]─┬─>[Z]    
+    │      │         
+    ├─>[C]─┤         
+    │      │         
+    └─>[D]─┘         
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {

@@ -43,10 +43,4 @@ http://blockdiag.com/en/index.html
 			H -> A;
 			X -> Y;
 		}
-- [ ] blockdiag {
-A -> B -> Z;
-A -> C -> Z;
-A -> D -> Z;
-A -> E -> Z;
-}
 - [ ] // Todo: Go up, until on the right height, right below End
