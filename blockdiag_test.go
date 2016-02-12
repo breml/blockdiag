@@ -603,6 +603,23 @@ blockdiag {
 		{
 			`
 blockdiag{
+	# Branch and merge over two rows and two cols with sub-branch
+	A -> B -> G;
+	A -> C -> D;
+	A -> E -> F;
+	E -> G;
+}
+`, `                            
+[A]─┬─>[B]────────┬─>[G]    
+    │             │         
+    ├─>[C]───>[D] │         
+    │      ┌──────┘         
+    └─>[E]─┴─>[F]           
+`,
+		},
+		{
+			`
+blockdiag{
 	# Branch and merge over two rows and two cols with sub-branch, 2
 	A -> B -> G;
 	A -> C -> D;

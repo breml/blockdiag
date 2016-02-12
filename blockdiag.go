@@ -154,8 +154,6 @@ func (diag *Diag) String() string {
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 					}
 
-					// Todo: Go up, until on the right height, right below End
-
 					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
 
 					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
@@ -163,6 +161,15 @@ func (diag *Diag) String() string {
 					}
 
 					outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+
+					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor; i++ {
+						switch outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] {
+						case empty:
+							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = vertical
+						case upLeft:
+							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = verticalLeft
+						}
+					}
 
 					// Findout correct junction
 					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
