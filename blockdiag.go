@@ -494,7 +494,6 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 							}
 						}
 						if move {
-							fmt.Println(node, n, diag.Grid[y][x])
 							diag.moveDependingNodesRight(n, placedNodes, 1)
 						}
 					}
