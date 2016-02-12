@@ -373,6 +373,14 @@ blockdiag {
     [C] [D]     
 `,
 		},
+		{
+			`blockdiag {
+	A -> B -> C -> D -> E;
+	A -> F -> C -> G -> E;
+}`, `[A] [B] [C] [D] [E] 
+    [F]     [G]    
+`,
+		},
 	} {
 		got, err := ParseReader("placeingrid.diag", strings.NewReader(test.input))
 		if err != nil {
@@ -633,6 +641,16 @@ blockdiag{
     ├─>[C]───>[D] │         
     │      ┌──────┤         
     └─>[E]─┴─>[F]─┘         
+`,
+		},
+		{
+			`blockdiag {
+	A -> B -> C -> D -> E;
+	A -> F -> C -> G -> E;
+}`, `                                   
+[A]─┬─>[B]─┬─>[C]─┬─>[D]─┬─>[E]    
+    │      │      │      │         
+    └─>[F]─┘      └─>[G]─┘         
 `,
 		},
 	} {
