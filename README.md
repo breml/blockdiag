@@ -31,6 +31,7 @@ http://blockdiag.com/en/index.html
 - [ ] Refactoring API, only make neccessary functions, methods, types, etc. public
 - [ ] Split blockdiag into multiple files
 - [ ] Split blockdiag_test into multiple files
+- [ ] Add tests for getChildNodes and getParentNodes
 
 ## Text Paint
 

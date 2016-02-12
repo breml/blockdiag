@@ -300,9 +300,9 @@ blockdiag{
 	B -> D;
 	A -> E -> C;
 }
-`, `[A] [B] [C] 
-        [D] 
-    [E]     
+`, `[A] [B]     [C] 
+        [D]     
+    [E]         
 `,
 		},
 		{
@@ -582,6 +582,57 @@ blockdiag {
     ├─>[C]─┤         
     │      │         
     └─>[D]─┘         
+`,
+		},
+		{
+			`
+blockdiag {
+	# Branch and merge over two rows and two cols
+	A -> B -> F;
+	A -> C -> D;
+	A -> E -> F;
+}
+`, `                            
+[A]─┬─>[B]────────┬─>[F]    
+    │             │         
+    ├─>[C]───>[D] │         
+    │             │         
+    └─>[E]────────┘         
+`,
+		},
+		{
+			`
+blockdiag{
+	# Branch and merge over two rows and two cols with sub-branch
+	A -> B -> G;
+	A -> C -> D;
+	A -> E -> F;
+	E -> G;
+}
+`, `                            
+[A]─┬─>[B]────────┬─>[G]    
+    │             │         
+    ├─>[C]───>[D] │         
+    │      ┌──────┘         
+    └─>[E]─┴─>[F]           
+`,
+		},
+		{
+			`
+blockdiag{
+	# Branch and merge over two rows and two cols with sub-branch, 2
+	A -> B -> G;
+	A -> C -> D;
+	A -> E -> F;
+	F -> G;
+	E -> G;
+}
+`, `                            
+[A]─┬─>[B]────────┬─>[G]    
+    │             │         
+    ├─>[C]───>[D] │         
+    │      ┌──────┤         
+    └─>[E]─┴─>[F]─┘         
 `,
 		},
 	} {
