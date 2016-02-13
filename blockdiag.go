@@ -487,7 +487,7 @@ func (diag *Diag) placeInGrid(node *Node, x int, y int, placedNodes map[*Node]bo
 				for y := node.PosY - 1; y > n.PosY; y-- {
 					if diag.Grid[y][n.PosX] != nil {
 						move := true
-						parentNodes := diag.Grid[y][x]
+						parentNodes := diag.Grid[y][n.PosX]
 						for _, pn := range parentNodes.getParentNodes(false) {
 							if pn == node {
 								move = false
