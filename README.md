@@ -33,16 +33,28 @@ http://blockdiag.com/en/index.html
 - [ ] Split blockdiag_test into multiple files
 - [ ] Add tests for getChildNodes and getParentNodes
 - [ ] Test implementation of PlaceInGrid with Breadth First
+- [ ] Self reference
 
-## Text Paint
+```
+A -> A;
+
+ ▾──┐
+[A]─┘
+
+┌─────┐
+└>[A]─┘
+```
 
 - [ ] Circular
-- [ ] blockdiag {
+
+```	
+	blockdiag {
 			A -> B -> C;
 			B -> D -> E -> H;
 			A -> F -> E;
 			F -> G -> H;
 			H -> A;
-			X -> Y;
 		}
+```
+
 - [X] Go up, until on the right height, right below End
