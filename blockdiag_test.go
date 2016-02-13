@@ -374,6 +374,20 @@ blockdiag {
 `,
 		},
 		{
+			`
+blockdiag {
+	A -> B;
+	D -> H -> I;
+	E -> F -> B;
+	H -> J;
+	J -> K;
+}`, `[A]             [B] 
+[D] [H] [I]         
+        [J] [K]     
+[E] [F]             
+`,
+		},
+		{
 			`blockdiag {
 	A -> B -> C -> D -> E;
 	A -> F -> C -> G -> E;

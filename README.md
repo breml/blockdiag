@@ -32,6 +32,7 @@ http://blockdiag.com/en/index.html
 - [ ] Split blockdiag into multiple files
 - [ ] Split blockdiag_test into multiple files
 - [ ] Add tests for getChildNodes and getParentNodes
+- [ ] Test implementation of PlaceInGrid with Breadth First
 
 ## Text Paint
 
@@ -44,4 +45,4 @@ http://blockdiag.com/en/index.html
 			H -> A;
 			X -> Y;
 		}
-- [ ] // Todo: Go up, until on the right height, right below End
+- [X] Go up, until on the right height, right below End
