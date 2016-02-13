@@ -183,7 +183,12 @@ func (diag *Diag) String() string {
 		if e.Start == e.End {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
-			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downLeft
+			switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] {
+			case empty:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downLeft
+			case vertical:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
+			}
 			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3] = horizontal
 			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+2] = horizontal
 			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+1] = arrowDown
