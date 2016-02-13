@@ -205,6 +205,8 @@ func (diag *Diag) String() string {
 				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
 			case verticalRight:
 				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = fourWay
+			case upLeft:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
 			}
 			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3] = horizontal
 			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+2] = horizontal
