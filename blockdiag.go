@@ -399,6 +399,7 @@ func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
 	if n == nil {
 		return
 	}
+
 	for _, e := range n.Edges {
 		if e.Start == n && e.End != n && (!e.closeCircle || includeCloseCircle) {
 			children = append(children, e.End)
@@ -412,6 +413,7 @@ func (n *Node) getParentNodes(includeCloseCircle bool) (parents Nodes) {
 	if n == nil {
 		return
 	}
+
 	for _, e := range n.Edges {
 		if e.End == n && e.Start != n && (!e.closeCircle || includeCloseCircle) {
 			parents = append(parents, e.Start)
@@ -481,6 +483,10 @@ type nodes struct {
 }
 
 func (n *nodes) exists(key string) bool {
+	if n == nil {
+		return false
+	}
+
 	ret, _ := linq.From(n.keys).AnyWith(func(s linq.T) (bool, error) {
 		return s.(string) == key, nil
 	})
