@@ -133,7 +133,12 @@ func (diag *Diag) String() string {
 
 				if straight {
 					for i := 0; i < (e.End.PosX-e.Start.PosX-1)*colFactor+1; i++ {
-						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
+						switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] {
+						case empty:
+							outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
+						case upLeft:
+							outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontalUp
+						}
 					}
 					outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = upLeft
 					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor+1; i++ {

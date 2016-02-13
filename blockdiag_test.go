@@ -672,6 +672,21 @@ blockdiag{
     └─▶[C]─┘         
 `,
 		},
+		{
+			`
+blockdiag{
+	# Self reference and reference to two nodes on upper level
+	A -> B -> D;
+	A -> C -> B;
+	C -> C;
+	C -> D;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │   ▼──┤      │         
+    └─▶[C]─┴──────┘         
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {
