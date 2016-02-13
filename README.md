@@ -33,7 +33,7 @@ http://blockdiag.com/en/index.html
 - [ ] Split blockdiag_test into multiple files
 - [ ] Add tests for getChildNodes and getParentNodes
 - [ ] Test implementation of PlaceInGrid with Breadth First
-- [ ] Self reference
+- [X] Self reference
 
 ```
 A -> A;
