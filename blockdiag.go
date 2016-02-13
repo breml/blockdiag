@@ -44,6 +44,10 @@ const (
 )
 
 func (diag *Diag) String() string {
+	if diag == nil {
+		return ""
+	}
+
 	var outGrid [][]rune
 
 	const (
@@ -189,6 +193,10 @@ func (diag *Diag) String() string {
 }
 
 func (diag *Diag) GoString() string {
+	if diag == nil {
+		return ""
+	}
+
 	var edges []string
 	var ret string
 
@@ -206,6 +214,10 @@ func (diag *Diag) GoString() string {
 }
 
 func (diag *Diag) NodesString() string {
+	if diag == nil {
+		return ""
+	}
+
 	var nodes []string
 
 	for _, node := range diag.Nodes {
@@ -217,6 +229,10 @@ func (diag *Diag) NodesString() string {
 }
 
 func (diag *Diag) EdgesString() string {
+	if diag == nil {
+		return ""
+	}
+
 	var edges []string
 
 	for _, edge := range diag.Edges {
@@ -228,6 +244,10 @@ func (diag *Diag) EdgesString() string {
 }
 
 func (diag *Diag) CircularString() string {
+	if diag == nil {
+		return ""
+	}
+
 	var circulars []string
 
 	for _, circular := range diag.Circular {
@@ -243,6 +263,10 @@ func (diag *Diag) CircularString() string {
 }
 
 func (diag *Diag) AttributesString() string {
+	if diag == nil {
+		return ""
+	}
+
 	var attributes []string
 
 	for key, value := range diag.Attributes {
@@ -254,10 +278,18 @@ func (diag *Diag) AttributesString() string {
 }
 
 func (diag *Diag) GridString() string {
+	if diag == nil {
+		return ""
+	}
+
 	return diag.Grid.String()
 }
 
 func (diag *Diag) FindCircular() bool {
+	if diag == nil {
+		return false
+	}
+
 	diag.Circular = nil
 
 	for _, n := range diag.getNodes() {
@@ -306,6 +338,10 @@ func (diag *Diag) subFindCircular(n *Node, visitedNodes *nodes) {
 }
 
 func (diag *Diag) getNodes() Nodes {
+	if diag == nil {
+		return Nodes{}
+	}
+
 	var nodes Nodes
 	for _, n := range diag.Nodes {
 		nodes = append(nodes, n)
@@ -315,6 +351,10 @@ func (diag *Diag) getNodes() Nodes {
 }
 
 func (diag *Diag) getStartNodes() Nodes {
+	if diag == nil {
+		return Nodes{}
+	}
+
 	var startNodes Nodes
 
 	for _, n := range diag.Nodes {
@@ -336,6 +376,10 @@ func (diag *Diag) getStartNodes() Nodes {
 }
 
 func (diag *Diag) getEdges() Edges {
+	if diag == nil {
+		return Edges{}
+	}
+
 	var edges Edges
 	for _, e := range diag.Edges {
 		edges = append(edges, e)
@@ -352,6 +396,9 @@ type Node struct {
 }
 
 func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
+	if n == nil {
+		return
+	}
 	for _, e := range n.Edges {
 		if e.Start == n && e.End != n && (!e.closeCircle || includeCloseCircle) {
 			children = append(children, e.End)
@@ -362,6 +409,9 @@ func (n *Node) getChildNodes(includeCloseCircle bool) (children Nodes) {
 }
 
 func (n *Node) getParentNodes(includeCloseCircle bool) (parents Nodes) {
+	if n == nil {
+		return
+	}
 	for _, e := range n.Edges {
 		if e.End == n && e.Start != n && (!e.closeCircle || includeCloseCircle) {
 			parents = append(parents, e.Start)
@@ -438,6 +488,10 @@ func (n *nodes) exists(key string) bool {
 }
 
 func (diag *Diag) PlaceInGrid() {
+	if diag == nil {
+		return
+	}
+
 	var x, y int
 
 	diag.FindCircular()
