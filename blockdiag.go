@@ -152,7 +152,7 @@ func (diag *Diag) String() string {
 					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 				} else {
-					// Go up until below End, go right until before End, go up and right into End
+					// Go up, go right until before End, go up until in stream into End and right into End
 					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 					switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 					case empty:
@@ -161,7 +161,12 @@ func (diag *Diag) String() string {
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 					}
 
-					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
+					switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] {
+					case empty:
+						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
+					case vertical:
+						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalRight
+					}
 
 					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
 						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal

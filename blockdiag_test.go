@@ -599,6 +599,21 @@ blockdiag {
 		},
 		{
 			`
+blockdiag{
+	# Merge to multiple nodes
+	A -> B -> D;
+	A -> X -> B;
+	X -> D;
+	X -> R;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │      ├──────┘         
+    └─▶[X]─┴─▶[R]           
+`,
+		},
+		{
+			`
 blockdiag {
 	# Branch and merge over two rows and two cols
 	A -> B -> F;
