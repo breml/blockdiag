@@ -169,10 +169,20 @@ func (diag *Diag) String() string {
 					}
 
 					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
-						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+						switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] {
+						case empty:
+							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+						case arrowDown:
+							// Keep arrowDown
+						}
 					}
 
-					outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+					switch outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] {
+					case empty:
+						outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+					case downLeft:
+						outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = verticalLeft
+					}
 
 					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor; i++ {
 						switch outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] {
