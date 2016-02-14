@@ -599,6 +599,21 @@ blockdiag {
 		},
 		{
 			`
+blockdiag{
+	# Merge to multiple nodes
+	A -> B -> D;
+	A -> X -> B;
+	X -> D;
+	X -> R;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │      ├──────┘         
+    └─▶[X]─┴─▶[R]           
+`,
+		},
+		{
+			`
 blockdiag {
 	# Branch and merge over two rows and two cols
 	A -> B -> F;
@@ -648,6 +663,108 @@ blockdiag{
     └─▶[E]─┴─▶[F]─┘         
 `,
 		},
+		{
+			`
+blockdiag{
+	# Self reference
+	A -> A;
+}
+`, ` ▼──┐  
+[A]─┘  
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference and reference to node on upper level
+	A -> B;
+	A -> C -> B;
+	C -> C;
+}
+`, `                     
+[A]─┬──────┬─▶[B]    
+    │   ▼──┤         
+    └─▶[C]─┘         
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference and reference to two nodes on upper level
+	A -> B -> D;
+	A -> C -> B;
+	C -> C;
+	C -> D;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │   ▼──┤      │         
+    └─▶[C]─┴──────┘         
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference and reference to two nodes on upper level, 2
+	A -> B -> D;
+	A -> X -> B;
+	X -> X;
+	X -> D;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │   ▼──┤      │         
+    └─▶[X]─┴──────┘         
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference and reference to two nodes on upper level and an other reference
+	A -> B -> D;
+	A -> X -> B;
+	X -> X;
+	X -> D;
+	X -> R;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │   ▼──┼──────┘         
+    └─▶[X]─┴─▶[R]           
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference with parent reference upper level
+	A -> B -> D;
+	A -> X -> B;
+	X -> D;
+	X -> Z;
+	Z -> Z;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │      ├───▼──┤         
+    └─▶[X]─┴─▶[Z]─┘         
+`,
+		},
+		{
+			`
+blockdiag{
+	# Self reference with parent reference upper level, 2
+	A -> B -> D;
+	A -> X -> B;
+	X -> D;
+	X -> R;
+	R -> R;
+}
+`, `                            
+[A]─┬──────┬─▶[B]─┬─▶[D]    
+    │      ├───▼──┤         
+    └─▶[X]─┴─▶[R]─┘         
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {
@@ -658,8 +775,9 @@ blockdiag{
 			t.Fatalf("assertion error: %s should parse to diag", test.input)
 		}
 		gotDiag.PlaceInGrid()
-		if gotDiag.String() != test.output {
-			t.Fatalf("for: \n%s\nexpected: \n%s\ngot: \n%s", test.input, strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(gotDiag.String(), " ", "\u00B7", -1))
+		output := gotDiag.String()
+		if output != test.output {
+			t.Fatalf("for: \n%s\nexpected: \n%s\ngot: \n%s", test.input, strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(output, " ", "\u00B7", -1))
 		}
 	}
 }

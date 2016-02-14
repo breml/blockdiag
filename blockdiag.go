@@ -41,6 +41,7 @@ const (
 	upRight        = '\u2514' // └ http://unicode-table.com/en/2514/
 	upLeft         = '\u2518' // ┘ http://unicode-table.com/en/2518/
 	downRight      = '\u250C' // ┌ http://unicode-table.com/en/250C/
+	downLeft       = '\u2510' // ┐ http://unicode-table.com/en/2510/
 	fourWay        = '\u253C' // ┼ http://unicode-table.com/en/253C/
 )
 
@@ -132,7 +133,12 @@ func (diag *Diag) String() string {
 
 				if straight {
 					for i := 0; i < (e.End.PosX-e.Start.PosX-1)*colFactor+1; i++ {
-						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
+						switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] {
+						case empty:
+							outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontal
+						case upLeft:
+							outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3+i] = horizontalUp
+						}
 					}
 					outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = upLeft
 					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor+1; i++ {
@@ -146,7 +152,7 @@ func (diag *Diag) String() string {
 					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
 
 				} else {
-					// Go up until below End, go right until before End, go up and right into End
+					// Go up, go right until before End, go up until in stream into End and right into End
 					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 					switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 					case empty:
@@ -155,13 +161,28 @@ func (diag *Diag) String() string {
 						outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 					}
 
-					outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
-
-					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
-						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+					switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] {
+					case empty:
+						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downRight
+					case vertical:
+						outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalRight
 					}
 
-					outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+					for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
+						switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] {
+						case empty:
+							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
+						case arrowDown:
+							// Keep arrowDown
+						}
+					}
+
+					switch outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] {
+					case empty:
+						outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = upLeft
+					case downLeft:
+						outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor-3] = verticalLeft
+					}
 
 					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor; i++ {
 						switch outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] {
@@ -177,6 +198,29 @@ func (diag *Diag) String() string {
 				}
 
 			}
+		}
+		// Self reference
+		if e.Start == e.End {
+			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
+			case empty:
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upLeft
+			case horizontal:
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+			}
+			switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] {
+			case empty:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downLeft
+			case vertical:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
+			case verticalRight:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = fourWay
+			case upLeft:
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
+			}
+			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3] = horizontal
+			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+2] = horizontal
+			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+1] = arrowDown
 		}
 	}
 

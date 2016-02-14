@@ -12,11 +12,7 @@ func main() {
 	simple := ""
 	simple =
 		`blockdiag {
-	A -> B;
-	H -> I;
-	E -> F -> B;
-	H -> J;
-	J -> K;
+	A -> A;
 }`
 
 	got, err := blockdiag.ParseReader("simple.diag", strings.NewReader(simple))
