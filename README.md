@@ -38,11 +38,8 @@ http://blockdiag.com/en/index.html
 ```
 A -> A;
 
- ▾──┐
+ ▼──┐
 [A]─┘
-
-┌─────┐
-└>[A]─┘
 ```
 
 - [ ] Circular

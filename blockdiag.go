@@ -30,7 +30,8 @@ func NewDiag() Diag {
 
 const (
 	empty          = ' '
-	arrowRight     = '>'
+	arrowRight     = '\u25B6' // ▶ http://unicode-table.com/en/25B6/
+	arrowDown      = '\u25BC' // ▼ http://unicode-table.com/en/25BC/
 	horizontal     = '\u2500' // ─ http://unicode-table.com/en/2500/
 	vertical       = '\u2502' // │ http://unicode-table.com/en/2502/
 	horizontalUp   = '\u2534' // ┴ http://unicode-table.com/en/2534/
