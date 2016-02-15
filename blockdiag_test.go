@@ -764,6 +764,25 @@ blockdiag{
     │      ├───▼──┤         
     └─▶[X]─┴─▶[R]─┘         
 `,
+		}, {
+			`blockdiag {
+	A -> B;
+	D -> H -> I;
+	E -> F -> B;
+	H -> J;
+	J -> K;
+	J -> M;
+}`, `                                   
+[A]──────────────────────┬─>[B]    
+                         │         
+[D]───>[H]─┬─>[I]        │         
+           │             │         
+           └─>[J]─┬─>[K] │         
+                  │      │         
+                  └─>[M] │         
+                         │         
+[E]───>[F]───────────────┘         
+`,
 		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
