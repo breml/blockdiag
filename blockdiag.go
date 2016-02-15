@@ -97,12 +97,12 @@ func (diag *Diag) String() string {
 			case horizontalUp:
 				outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = fourWay
 			}
-			for i := 1; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
-				switch outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] {
+			for i := 0; i < (e.End.PosY-e.Start.PosY)*rowFactor+1; i++ {
+				switch outGrid[e.Start.PosY*rowFactor+i+1][e.Start.PosX*colFactor+4] {
 				case empty:
-					outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] = vertical
+					outGrid[e.Start.PosY*rowFactor+i+1][e.Start.PosX*colFactor+4] = vertical
 				case upRight:
-					outGrid[e.Start.PosY+i+1][e.Start.PosX*colFactor+4] = verticalRight
+					outGrid[e.Start.PosY*rowFactor+i+1][e.Start.PosX*colFactor+4] = verticalRight
 				}
 			}
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
