@@ -56,7 +56,7 @@ A -> A;
 
 - [X] Go up, until on the right height, right below End
 
-- [ ] Fix paint error:
+- [ ] Fix paint error, X and G seem connected but they aren't
 
 ```
 `blockdiag {
