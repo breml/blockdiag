@@ -174,6 +174,8 @@ func (diag *Diag) String() string {
 							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontal
 						case arrowDown:
 							// Keep arrowDown
+						case upLeft:
+							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontalUp
 						}
 					}
 
@@ -194,7 +196,12 @@ func (diag *Diag) String() string {
 					}
 
 					// Findout correct junction
-					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+					switch outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] {
+					case empty, horizontal:
+						outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+					case upRight:
+						outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = verticalRight
+					}
 				}
 
 			}
