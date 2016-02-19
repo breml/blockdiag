@@ -341,15 +341,14 @@ var g = &grammar{
 			expr: &seqExpr{
 				pos: position{line: 68, col: 11, offset: 1252},
 				exprs: []interface{}{
-					&litMatcher{
-						pos:        position{line: 68, col: 11, offset: 1252},
-						val:        "#",
-						ignoreCase: false,
+					&ruleRefExpr{
+						pos:  position{line: 68, col: 11, offset: 1252},
+						name: "CommentPrefix",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 68, col: 15, offset: 1256},
+						pos: position{line: 68, col: 25, offset: 1266},
 						expr: &charClassMatcher{
-							pos:        position{line: 68, col: 15, offset: 1256},
+							pos:        position{line: 68, col: 25, offset: 1266},
 							val:        "[^\\n\\r]",
 							chars:      []rune{'\n', '\r'},
 							ignoreCase: false,
@@ -357,9 +356,9 @@ var g = &grammar{
 						},
 					},
 					&zeroOrOneExpr{
-						pos: position{line: 68, col: 24, offset: 1265},
+						pos: position{line: 68, col: 34, offset: 1275},
 						expr: &charClassMatcher{
-							pos:        position{line: 68, col: 24, offset: 1265},
+							pos:        position{line: 68, col: 34, offset: 1275},
 							val:        "[\\r]",
 							chars:      []rune{'\r'},
 							ignoreCase: false,
@@ -367,7 +366,7 @@ var g = &grammar{
 						},
 					},
 					&charClassMatcher{
-						pos:        position{line: 68, col: 29, offset: 1270},
+						pos:        position{line: 68, col: 39, offset: 1280},
 						val:        "[\\n]",
 						chars:      []rune{'\n'},
 						ignoreCase: false,
@@ -377,12 +376,31 @@ var g = &grammar{
 			},
 		},
 		{
+			name: "CommentPrefix",
+			pos:  position{line: 70, col: 1, offset: 1286},
+			expr: &choiceExpr{
+				pos: position{line: 70, col: 17, offset: 1302},
+				alternatives: []interface{}{
+					&litMatcher{
+						pos:        position{line: 70, col: 17, offset: 1302},
+						val:        "#",
+						ignoreCase: false,
+					},
+					&litMatcher{
+						pos:        position{line: 70, col: 23, offset: 1308},
+						val:        "//",
+						ignoreCase: false,
+					},
+				},
+			},
+		},
+		{
 			name: "EOF",
-			pos:  position{line: 70, col: 1, offset: 1276},
+			pos:  position{line: 72, col: 1, offset: 1314},
 			expr: &notExpr{
-				pos: position{line: 70, col: 7, offset: 1282},
+				pos: position{line: 72, col: 7, offset: 1320},
 				expr: &anyMatcher{
-					line: 70, col: 8, offset: 1283,
+					line: 72, col: 8, offset: 1321,
 				},
 			},
 		},

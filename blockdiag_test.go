@@ -85,6 +85,21 @@ blockdiag # Comment
 			map[string]string{},
 		},
 		{
+			"Alt Comment",
+			`
+// Comment
+blockdiag // Comment
+{
+// Comment
+	A; // Comment
+// Comment
+} // Comment
+`,
+			[]string{"A"},
+			[]string{},
+			map[string]string{},
+		},
+		{
 			"Multi Char Node Names",
 			`
 blockdiag
