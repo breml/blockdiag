@@ -65,6 +65,8 @@ ident = [a-zA-Z0-9_]+ {
 
 _ = ([ \t\n\r] / Comment)*
 
-Comment = "#" [^\n\r]* [\r]?[\n]
+Comment = CommentPrefix [^\n\r]* [\r]?[\n]
+
+CommentPrefix = "#" / "//"
 
 EOF = !.
