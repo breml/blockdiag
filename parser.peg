@@ -14,7 +14,7 @@ diag = _ (diagtype:("blockdiag" / "diagram") {
 }
 
 // diagElements = diagAttr / chain / node
-diagElements = diagAttr / chains
+diagElements = diagAttr / chain
 
 diagAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
 	_parserDiag.Attributes[attrName.(string)] = attrValue.(string)

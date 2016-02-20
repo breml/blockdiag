@@ -126,6 +126,28 @@ blockdiag
 		},
 		{
 			`
+# Digramm Attributes
+blockdiag
+{
+	attr1 = 1;
+	attr2 = 2;
+	A;
+	attr3 = 3;
+	B -> C;
+	attr4 = 4;
+}
+`,
+			[]string{"A", "B", "C"},
+			[]string{"B|C"},
+			map[string]string{
+				"attr1": "1",
+				"attr2": "2",
+				"attr3": "3",
+				"attr4": "4",
+			},
+		},
+		{
+			`
 # Digram type 'diagram'
 diagram
 {
