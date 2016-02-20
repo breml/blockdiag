@@ -97,7 +97,7 @@ blockdiag
 			map[string]string{},
 		},
 		{
-			"Digramm Attributes",
+			"Digramm Attribute",
 			`
 blockdiag
 {
@@ -109,6 +109,28 @@ blockdiag
 			[]string{},
 			map[string]string{
 				"node_width": "128",
+			},
+		},
+		{
+			"Digramm Attributes",
+			`
+blockdiag
+{
+	attr1 = 1;
+	attr2 = 2;
+	A;
+	attr3 = 3;
+	B -> C;
+	attr4 = 4;
+}
+`,
+			[]string{"A", "B", "C"},
+			[]string{"B|C"},
+			map[string]string{
+				"attr1": "1",
+				"attr2": "2",
+				"attr3": "3",
+				"attr4": "4",
 			},
 		},
 		{
