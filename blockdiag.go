@@ -306,10 +306,11 @@ func (diag *Diag) getEdges() Edges {
 }
 
 type Node struct {
-	Name  string
-	PosX  int
-	PosY  int
-	Edges []*Edge
+	Name       string
+	PosX       int
+	PosY       int
+	Edges      []*Edge
+	Attributes map[string]string
 }
 
 func (n *Node) getChildNodes() (children Nodes) {
