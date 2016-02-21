@@ -2,6 +2,11 @@ package blockdiag
 
 var _parserDiag Diag
 
+type attribute struct {
+	key   string
+	value string
+}
+
 func toIfaceSlice(v interface{}) []interface{} {
 	if v == nil {
 		return nil

@@ -13,8 +13,7 @@ diag = _ (diagtype:("blockdiag" / "diagram") {
 	return _parserDiag, nil
 }
 
-// diagElements = diagAttr / chain / node
-diagElements = diagAttr / chain
+diagElements = diagAttr / chain / attributedNode
 
 diagAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
 	_parserDiag.Attributes[attrName.(string)] = attrValue.(string)
@@ -24,8 +23,6 @@ diagAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
 attrValue = ([a-zA-Z0-9]+) {
 	return string(c.text), nil
 }
-
-chains = chain+
 
 chain = node:node _ nodes:(edge _ n:node _ {
 	return n, nil
@@ -55,6 +52,23 @@ node = node:ident {
 		_parserDiag.Nodes[name] = n
 	} 
 	return n, nil
+}
+
+attributedNode = node:node _ "[" _ iAttrs:nodeAttr* _ "]" _ ";" _ {
+	nodeA := node.(*Node)
+	if nodeA.Attributes == nil {
+		nodeA.Attributes = make(map[string]string)
+	}
+	for _, iAttr := range toIfaceSlice(iAttrs) {
+		attr := iAttr.(attribute)
+		nodeA.Attributes[attr.key] = attr.value
+	}
+	return nil, nil
+}
+
+nodeAttr = attrName:ident _ "=" _ attrValue:attrValue _ ";" _ {
+	attr := attribute{key: attrName.(string), value: attrValue.(string)}
+	return attr, nil
 }
 
 edge = edge:("->") 

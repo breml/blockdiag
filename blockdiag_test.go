@@ -203,6 +203,127 @@ blockdiag
 	}
 }
 
+func TestNodeAttributes(t *testing.T) {
+	for _, test := range []struct {
+		input string
+		nodes []Node
+	}{
+		{
+			`
+blockdiag{
+	# No attributes
+	A;
+}
+`,
+			[]Node{
+				Node{Name: "A"},
+			},
+		},
+		{
+			`
+blockdiag{
+	# Empty attributes
+	A [ ];
+}
+`,
+			[]Node{
+				Node{Name: "A"},
+			},
+		},
+		{
+			`
+blockdiag{
+	# One attribute
+	A [ key1 = val1; ];
+}
+`,
+			[]Node{
+				Node{Name: "A", Attributes: map[string]string{"key1": "val1"}},
+			},
+		},
+		{
+			`
+blockdiag{
+	# Multiple attributes
+	A [ key1 = val1; key2 = val2; key3 = val3; ];
+}
+`,
+			[]Node{
+				Node{Name: "A", Attributes: map[string]string{"key1": "val1", "key2": "val2", "key3": "val3"}},
+			},
+		},
+		{
+			`
+blockdiag{
+	# Multiple definitions
+	A;
+	A [ key1 = val1; ];
+}
+`,
+			[]Node{
+				Node{Name: "A", Attributes: map[string]string{"key1": "val1"}},
+			},
+		},
+		{
+			`
+blockdiag{
+	# Multiple definitions, multiple attributes
+	A [ key1 = val1; ];
+	A [ key2 = val2; ];
+	A [ key3 = val3; ];
+}
+`,
+			[]Node{
+				Node{Name: "A", Attributes: map[string]string{"key1": "val1", "key2": "val2", "key3": "val3"}},
+			},
+		},
+		{
+			`
+blockdiag{
+	# Edge with attributed nodes
+	A [ key1 = val1; ];
+	A -> B;
+	B [ key2 = val2; ];
+}
+`,
+			[]Node{
+				Node{Name: "A", Attributes: map[string]string{"key1": "val1"}},
+				Node{Name: "B", Attributes: map[string]string{"key2": "val2"}},
+			},
+		},
+	} {
+		got, err := ParseReader("nodeattrs.diag", strings.NewReader(test.input))
+		if err != nil {
+			t.Fatalf("should parse, but give an error with input %s", test.input)
+		}
+		gotDiag, ok := got.(Diag)
+		if !ok {
+			t.Fatalf("assertion error: %s should parse to diag", test.input)
+		}
+
+		for _, n := range test.nodes {
+			if gotDiag.Nodes[n.Name] == nil {
+				t.Fatalf("expect node %s to be present in %s", n.Name, test.input)
+			}
+			var tattributes []string
+			for key, value := range n.Attributes {
+				tattributes = append(tattributes, key+"="+value)
+			}
+			sort.Strings(tattributes)
+
+			var rattributes []string
+			for key, value := range gotDiag.Nodes[n.Name].Attributes {
+				rattributes = append(rattributes, key+"="+value)
+			}
+			sort.Strings(rattributes)
+
+			if strings.Join(tattributes, "\n") != strings.Join(rattributes, "\n") {
+				t.Fatalf("node attributes error: %s, expected '%s', got: '%s'", test.input, strings.Join(tattributes, "\n"), strings.Join(rattributes, "\n"))
+			}
+		}
+	}
+}
+
 func TestCircular(t *testing.T) {
 	for _, test := range []struct {
 		input    string
