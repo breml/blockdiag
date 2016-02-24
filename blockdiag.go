@@ -180,6 +180,8 @@ func (diag *Diag) String() string {
 							// Keep arrowDown
 						case upLeft:
 							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = horizontalUp
+						case verticalLeft:
+							outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4+i] = fourWay
 						}
 					}
 

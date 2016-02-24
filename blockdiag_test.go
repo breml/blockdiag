@@ -945,7 +945,7 @@ blockdiag{
 		{
 			`
 blockdiag{
-	# Self reference with parent reference upper level, 2
+	# Parent reference upper level, 2
 	A -> B -> D;
 	A -> X -> B;
 	X -> D;
@@ -960,6 +960,26 @@ blockdiag{
     │      │      │      ├─▶[H]    
     │      ├──────┴──────┘         
     └─▶[X]─┴─▶[R]                  
+`,
+		},
+		{
+			`
+# Self reference with parent reference upper level, 2
+blockdiag {
+	A -> B -> D;
+	A -> X -> B;
+	X -> D;
+	X -> R;
+	D -> G;
+	D -> H;
+	X -> H;
+	R -> R;
+}`, `                                   
+[A]─┬──────┬─▶[B]─┬─▶[D]─┬─▶[G]    
+    │      │      │      │         
+    │      │      │      ├─▶[H]    
+    │      ├───▼──┼──────┘         
+    └─▶[X]─┴─▶[R]─┘                
 `,
 		},
 	} {
