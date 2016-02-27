@@ -215,7 +215,7 @@ func (diag *Diag) String() string {
 			}
 		}
 		// Self reference
-		if e.Start == e.End {
+		if e.Start == e.End || e.Start.PosX > e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
 			case empty:
@@ -233,9 +233,10 @@ func (diag *Diag) String() string {
 			case upLeft:
 				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
 			}
-			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3] = horizontal
-			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+2] = horizontal
-			outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+1] = arrowDown
+			for i := 0; i < (e.Start.PosX-e.End.PosX)*colFactor+2; i++ {
+				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3-i] = horizontal
+			}
+			outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor+1] = arrowDown
 		}
 	}
 
