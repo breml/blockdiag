@@ -111,7 +111,7 @@ func (diag *Diag) String() string {
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
 		}
-		if e.Start.PosY > e.End.PosY {
+		if e.Start.PosY > e.End.PosY && e.Start.PosX < e.End.PosX {
 			if e.Start.PosX+1 == e.End.PosX {
 				// Go directly up and right
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
@@ -214,7 +214,7 @@ func (diag *Diag) String() string {
 
 			}
 		}
-		// Self reference
+		// Self reference & Circular
 		if e.Start == e.End || e.Start.PosX > e.End.PosX {
 			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
 			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
@@ -223,20 +223,23 @@ func (diag *Diag) String() string {
 			case horizontal:
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 			}
-			switch outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] {
+			for i := 0; i < (e.Start.PosY-e.End.PosY)*rowFactor; i++ {
+				outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+			}
+			switch outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] {
 			case empty:
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = downLeft
+				outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] = downLeft
 			case vertical:
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
+				outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
 			case verticalRight:
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = fourWay
+				outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] = fourWay
 			case upLeft:
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
+				outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] = verticalLeft
 			}
 			for i := 0; i < (e.Start.PosX-e.End.PosX)*colFactor+2; i++ {
-				outGrid[e.Start.PosY*rowFactor][e.Start.PosX*colFactor+3-i] = horizontal
+				outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+3-i] = horizontal
 			}
-			outGrid[e.Start.PosY*rowFactor][e.End.PosX*colFactor+1] = arrowDown
+			outGrid[e.End.PosY*rowFactor][e.End.PosX*colFactor+1] = arrowDown
 		}
 	}
 
