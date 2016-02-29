@@ -1005,6 +1005,22 @@ blockdiag {
     └─▶[C]─┘  
 `,
 		},
+		{
+			`
+# Circular over two
+blockdiag {
+		A -> B;
+		A -> C; 
+		A -> D -> A;
+	}
+`, ` ▼─────────┐  
+[A]─┬─▶[B] │  
+    │      │  
+    ├─▶[C] │  
+    │      │  
+    └─▶[D]─┘  
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {
