@@ -224,7 +224,12 @@ func (diag *Diag) String() string {
 				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
 			}
 			for i := 0; i < (e.Start.PosY-e.End.PosY)*rowFactor; i++ {
-				outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+				switch outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] {
+				case empty:
+					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+				default:
+				}
+
 			}
 			switch outGrid[e.End.PosY*rowFactor][e.Start.PosX*colFactor+4] {
 			case empty:
