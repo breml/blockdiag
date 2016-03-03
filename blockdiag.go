@@ -92,7 +92,7 @@ func (diag *Diag) String() string {
 			}
 			outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 		}
-		if e.Start.PosY < e.End.PosY && e.Start.PosX+1 == e.End.PosX {
+		if e.Start.PosY < e.End.PosY {
 			switch outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] {
 			case horizontal:
 				outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
@@ -108,8 +108,12 @@ func (diag *Diag) String() string {
 				}
 			}
 			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = upRight
-			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5] = horizontal
-			outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+6] = arrowRight
+
+			for i := 0; i < (e.End.PosX-e.Start.PosX-1)*colFactor+1; i++ {
+				outGrid[e.End.PosY*rowFactor+1][e.Start.PosX*colFactor+5+i] = horizontal
+			}
+
+			outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 		}
 		if e.Start.PosY > e.End.PosY {
 			if e.Start.PosX+1 == e.End.PosX {
