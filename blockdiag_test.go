@@ -1057,6 +1057,22 @@ blockdiag {
     └─▶[D]─┘         
 `,
 		},
+		{
+			`
+# Out of bound error
+blockdiag {
+	A -> B -> C;
+	B -> D -> E -> H;
+	A -> F -> E;
+}
+`, `                                   
+[A]─┬─▶[B]─┬─▶[C]                  
+    │      │                       
+    │      └─▶[D]─┬─▶[E]───▶[H]    
+    │             │                
+    └─▶[F]────────┘                
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {

@@ -150,11 +150,11 @@ func (diag *Diag) String() string {
 					}
 					outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = upLeft
 					for i := 0; i < (e.Start.PosY-e.End.PosY-1)*rowFactor+1; i++ {
-						switch outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] {
+						switch outGrid[e.End.PosY*rowFactor+2+i][e.End.PosX*colFactor-3] {
 						case empty:
-							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = vertical
+							outGrid[e.End.PosY*rowFactor+2+i][e.End.PosX*colFactor-3] = vertical
 						case upLeft:
-							outGrid[e.End.PosY*colFactor+2+i][e.End.PosX*colFactor-3] = verticalLeft
+							outGrid[e.End.PosY*rowFactor+2+i][e.End.PosX*colFactor-3] = verticalLeft
 						}
 					}
 					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
