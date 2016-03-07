@@ -922,7 +922,8 @@ blockdiag{
     │      ├───▼──┤         
     └─▶[X]─┴─▶[R]─┘         
 `,
-		}, {
+		},
+		{
 			`blockdiag {
 	A -> B;
 	D -> H -> I;
@@ -1073,6 +1074,22 @@ blockdiag {
     └─▶[F]────────┘                
 `,
 		},
+		{
+			`
+# Crossing (not completely right)
+blockdiag {
+	A -> B; # -> C;
+	B -> D -> E; # -> H;
+	A -> F -> D;
+	F -> G -> E;
+	G -> B;
+}
+`, `                                          
+[A]─┬─────────────┬─▶[B]─┬─▶[D]─┬─▶[E]    
+    │      ┌──────┼──────┘      │         
+    └─▶[F]─┴─▶[G]─┴─────────────┘         
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {
@@ -1085,7 +1102,7 @@ blockdiag {
 		gotDiag.PlaceInGrid()
 		output := gotDiag.String()
 		if output != test.output {
-			t.Fatalf("for: \n%s\nexpected: \n%s\ngot: \n%s", test.input, strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(output, " ", "\u00B7", -1))
+			t.Errorf("for: \n%s\nexpected: \n%s\ngot: \n%s", test.input, strings.Replace(test.output, " ", "\u00B7", -1), strings.Replace(output, " ", "\u00B7", -1))
 		}
 	}
 }
