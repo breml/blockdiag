@@ -130,7 +130,11 @@ func (diag *Diag) String() string {
 						outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = fourWay
 					}
 				}
-				outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+				switch outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] {
+				case fourWay:
+				default:
+					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+				}
 			} else {
 				// Check if the straight way is free
 				straight := true
@@ -159,7 +163,10 @@ func (diag *Diag) String() string {
 							outGrid[e.End.PosY*rowFactor+2+i][e.End.PosX*colFactor-3] = verticalLeft
 						}
 					}
-					outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+					switch outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] {
+					default:
+						outGrid[e.End.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+					}
 
 				} else {
 					// Go up, go right until before End, go up until in stream into End and right into End
@@ -233,6 +240,8 @@ func (diag *Diag) String() string {
 				switch outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] {
 				case empty:
 					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = vertical
+				case horizontal:
+					outGrid[e.Start.PosY*rowFactor-i][e.Start.PosX*colFactor+4] = fourWay
 				default:
 				}
 
