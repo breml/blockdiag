@@ -1078,8 +1078,8 @@ blockdiag {
 			`
 # Crossing (not completely right)
 blockdiag {
-	A -> B; # -> C;
-	B -> D -> E; # -> H;
+	A -> B;
+	B -> D -> E;
 	A -> F -> D;
 	F -> G -> E;
 	G -> B;
@@ -1102,6 +1102,19 @@ blockdiag {
 [A]─┬──────┼─▶[B]    
     │      │         
     └─▶[G]─┘         
+`,
+		},
+		{
+			`
+# Merge from two starts
+blockdiag {
+	A -> B;
+	C -> B;
+}
+`, `              
+[A]─┬─▶[B]    
+    │         
+[C]─┘         
 `,
 		},
 	} {
