@@ -1117,6 +1117,19 @@ blockdiag {
 [C]─┘         
 `,
 		},
+		{
+			`
+# Branch and Merge, second shorter
+blockdiag {
+	A -> B -> C;
+	A -> C;
+}
+`, `                     
+[A]─┬─▶[B]─┬─▶[C]    
+    └──────┘         
+                     
+`,
+		},
 	} {
 		got, err := ParseReader("diagstring.diag", strings.NewReader(test.input))
 		if err != nil {

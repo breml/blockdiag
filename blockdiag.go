@@ -80,17 +80,53 @@ func (diag *Diag) String() string {
 	// Place Edges
 	for _, e := range diag.getEdges() {
 		if e.Start.PosY == e.End.PosY && e.Start.PosX < e.End.PosX {
-			outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
-			switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
-			case empty:
-				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
-			case upLeft:
-				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+			// Check if the straight way is free
+			straight := true
+			for i := 1; i < (e.End.PosX - e.Start.PosX); i++ {
+				if diag.Grid[e.Start.PosY][e.Start.PosX+i] != nil {
+					straight = false
+					break
+				}
 			}
-			for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor+2; i++ {
-				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4+i] = horizontal
+
+			if straight {
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+				switch outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] {
+				case empty:
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontal
+				case upLeft:
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalUp
+				}
+				for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor+2; i++ {
+					outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4+i] = horizontal
+				}
+				outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
+			} else {
+				if (e.Start.PosY+1)*rowFactor == len(outGrid) {
+					// Reduce redundency, move to function
+					for i := 0; i < 2; i++ {
+						outGrid = append(outGrid, make([]rune, len(diag.Grid[0])*colFactor))
+						for x, _ := range outGrid[(e.Start.PosY+1)*rowFactor] {
+							outGrid[(e.Start.PosY+1)*rowFactor+i][x] = ' '
+						}
+					}
+				}
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+3] = horizontal
+				outGrid[e.Start.PosY*rowFactor+1][e.Start.PosX*colFactor+4] = horizontalDown
+				switch outGrid[e.Start.PosY*rowFactor+2][e.Start.PosX*colFactor+4] {
+				case empty:
+					outGrid[e.Start.PosY*rowFactor+2][e.Start.PosX*colFactor+4] = upRight
+				}
+				for i := 1; i < (e.End.PosX-e.Start.PosX-1)*colFactor; i++ {
+					outGrid[e.Start.PosY*rowFactor+2][e.Start.PosX*colFactor+4+i] = horizontal
+				}
+				switch outGrid[e.Start.PosY*rowFactor+2][e.End.PosX*colFactor-3] {
+				case empty:
+					outGrid[e.Start.PosY*rowFactor+2][e.End.PosX*colFactor-3] = upLeft
+				}
+				outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-3] = horizontalDown
+				outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 			}
-			outGrid[e.Start.PosY*rowFactor+1][e.End.PosX*colFactor-1] = arrowRight
 		}
 		if e.Start.PosY < e.End.PosY {
 			switch outGrid[(e.Start.PosY)*rowFactor+1][e.Start.PosX*colFactor+4] {
