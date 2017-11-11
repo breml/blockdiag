@@ -69,3 +69,13 @@ A -> A;
 	X -> H;
 }`
 ```
+
+- [ ] Complete Failure
+
+blockdiag {
+	A -> B;
+	A -> F; # Zwei mal A -> F
+	A -> F;
+	G -> A;
+	G -> B;
+}
